@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import logo from "@/assets/home/home-logo.webp.asset.json";
 import logoutIcon from "@/assets/home/home-icon-logout.webp.asset.json";
@@ -7,6 +7,7 @@ import decoBottom from "@/assets/home/home-deco-bottom.webp.asset.json";
 import woman from "@/assets/home/home-woman.webp.asset.json";
 import man from "@/assets/home/home-man.webp.asset.json";
 import arrow from "@/assets/home/home-arrow.webp.asset.json";
+import { queueQuestion } from "@/jupiter/chat";
 import "./home.css";
 
 const W = 1920;
@@ -27,6 +28,7 @@ type NavId = (typeof NAV)[number]["id"];
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function HomePage() {
+  const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -70,8 +72,13 @@ export function HomePage() {
     document.fonts?.ready.then(measure).catch(() => {});
   }, [active]);
 
+  // A pergunta digitada na Home é enviada ao chat do Júpiter.
   const onSearch = (e: FormEvent) => {
     e.preventDefault();
+    const text = query.trim();
+    if (!text) return;
+    queueQuestion(text);
+    navigate({ to: "/jupiter" });
   };
 
   return (
@@ -98,8 +105,12 @@ export function HomePage() {
                 style={{ left: n.center }}
                 aria-current={active === n.id ? "page" : undefined}
                 onClick={() => {
-                  setActive(n.id);
                   setMenuOpen(false);
+                  if (n.id === "jupiter") {
+                    navigate({ to: "/jupiter" });
+                    return;
+                  }
+                  setActive(n.id);
                 }}
               >
                 <span>{n.label}</span>
