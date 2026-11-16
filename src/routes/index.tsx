@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import logo from "@/assets/seguraoz-jupiter-logo.png.asset.json";
 import illustration from "@/assets/login-illustration.png.asset.json";
@@ -26,6 +26,7 @@ const H = 1200;
 
 function LoginPage() {
   const stageRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [blink, setBlink] = useState(false);
   const [user, setUser] = useState("");
@@ -78,6 +79,7 @@ function LoginPage() {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     persist(remember, user);
+    navigate({ to: "/home" });
   };
 
   return (

@@ -1,0 +1,218 @@
+/* Home do Júpiter — reprodução do layout de referência (palco 1920x1080) */
+.hm-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+.hm-page *,
+.hm-page *::before,
+.hm-page *::after { box-sizing: border-box; margin: 0; }
+
+.hm-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  background: #fff;
+  transform-origin: top left;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.hm-page.is-ready .hm-stage { opacity: 1; }
+
+/* ---------- Barra superior ---------- */
+.hm-topbar {
+  position: absolute; left: 0; top: 0; width: 100%; height: 85px;
+  background: #1e47f7; z-index: 2;
+}
+/* cantos internos arredondados do conteúdo branco */
+.hm-corners {
+  position: absolute; left: 0; top: 85px; width: 100%; height: 44px;
+  background: #1e47f7; z-index: 0;
+}
+.hm-content-bg {
+  position: absolute; left: 0; top: 85px; width: 100%; bottom: 0;
+  background: #fff; border-radius: 44px 44px 0 0; z-index: 1;
+}
+
+.hm-logo-link { position: absolute; left: 59.7px; top: 12.6px; width: 138.6px; height: 72.4px; z-index: 4; }
+.hm-logo { width: 100%; height: 100%; display: block; }
+
+.hm-nav { position: absolute; inset: 0; z-index: 3; }
+.hm-tab {
+  position: absolute; top: 0; height: 85px; left: 357px; width: 247px;
+  background: #fff; border-radius: 25px 25px 0 0;
+  transition: left 0.38s cubic-bezier(0.65, 0, 0.35, 1), width 0.38s cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+}
+.hm-tab::before,
+.hm-tab::after {
+  content: ""; position: absolute; bottom: 0; width: 25px; height: 25px;
+}
+.hm-tab::before { left: -25px; background: radial-gradient(circle at 0 0, transparent 24.5px, #fff 25px); }
+.hm-tab::after { right: -25px; background: radial-gradient(circle at 100% 0, transparent 24.5px, #fff 25px); }
+
+.hm-nav-item {
+  position: absolute; top: 0; height: 85px; transform: translateX(-50%);
+  display: flex; align-items: center; padding: 0 0 2px;
+  border: 0; background: transparent; cursor: pointer; white-space: nowrap;
+  font-family: "Poppins", sans-serif; font-size: 30px; font-weight: 400; line-height: 1;
+  color: #dfff86; transition: color 0.25s ease, opacity 0.25s ease;
+}
+.hm-nav-item span { position: relative; }
+.hm-nav-item span::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 3px; border-radius: 3px;
+  background: currentColor; transform: scaleX(0); transition: transform 0.25s ease;
+}
+.hm-nav-item:not(.is-active):hover { color: #fff; }
+.hm-nav-item:not(.is-active):hover span::after { transform: scaleX(1); }
+.hm-nav-item.is-active { color: #1e47f7; font-size: 37px; font-weight: 500; cursor: default; padding-bottom: 1px; }
+.hm-nav-item:focus-visible { outline: 3px solid #dfff86; outline-offset: -6px; border-radius: 12px; }
+
+.hm-logout {
+  position: absolute; left: 1735px; top: 15px; width: 125px; height: 55px; z-index: 4;
+  display: flex; align-items: center; gap: 10px; padding-left: 12.8px;
+  background: #dfff86; border-radius: 21px; text-decoration: none;
+  color: #1e47f7; font-size: 28px; font-weight: 500; line-height: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.hm-logout img { width: 32.5px; height: 27.8px; display: block; }
+.hm-logout span { padding-top: 3px; }
+.hm-logout:hover { background: #eaffb0; transform: translateY(-2px); box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.35); }
+.hm-logout:active { transform: translateY(0); }
+
+.hm-menu-btn { display: none; }
+
+/* ---------- Cartão verde ---------- */
+.hm-card {
+  position: absolute; left: 60px; top: 142px; width: 1800px; height: 847px;
+  background: #dfff86; border-radius: 50px; z-index: 1;
+}
+.hm-img { position: absolute; display: block; pointer-events: none; user-select: none; }
+.hm-deco-bottom { left: 1327.2px; top: 567.4px; width: 425.1px; height: 279.4px; z-index: 0; }
+.hm-woman { left: -67px; top: 257.8px; width: 479.2px; height: 579.5px; z-index: 2; }
+.hm-man { left: 1333.8px; top: 54px; width: 487.6px; height: 278.6px; z-index: 2; }
+.hm-arrow {
+  left: 1524.35px; top: 314.2px; width: 187.1px; height: 235.3px; z-index: 2;
+  transform-origin: -123.4px -60.4px; transform: rotate(13.3706deg);
+}
+.hm-deco-top { left: 100.2px; top: -0.2px; width: 329.5px; height: 280.1px; z-index: 2; }
+
+.hm-title {
+  position: absolute; left: 0; top: 117.5px; width: 100%; z-index: 1;
+  text-align: center; color: #1e47f7;
+  font-size: 78px; line-height: 117px; font-weight: 700; letter-spacing: 0;
+}
+.hm-title span { display: block; }
+
+.hm-search {
+  position: absolute; left: 557px; top: 491px; width: 698px; height: 97px; z-index: 3;
+  background: #fff; border-radius: 30px;
+}
+.hm-search-input {
+  position: absolute; left: 12px; top: 13px; width: 594px; height: 73px;
+  border: 3px solid #bfbfbf; border-radius: 22px; background: #fff;
+  padding: 0 24px; font-family: "Poppins", sans-serif; font-size: 26px; color: #4a4a4a;
+  outline: none; transition: border-color 0.2s ease;
+}
+.hm-search-input::placeholder { color: #bfbfbf; opacity: 1; }
+.hm-search-input:focus { border-color: #1e47f7; }
+.hm-search-btn {
+  position: absolute; left: 614px; top: 13px; width: 73px; height: 73px;
+  border: 0; border-radius: 22px; background: #1e47f7; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hm-search-btn svg { width: 73px; height: 73px; display: block; transition: transform 0.25s ease; }
+.hm-search-btn:hover { transform: scale(1.06); box-shadow: 0 10px 20px -10px rgba(30, 71, 247, 0.8); }
+.hm-search-btn:hover svg { transform: translate(2px, -2px); }
+.hm-search-btn:active { transform: scale(0.97); }
+.hm-search-btn:focus-visible { outline: 3px solid #1e47f7; outline-offset: 3px; }
+
+/* ---------- Telas estreitas: layout empilhado ---------- */
+@media (max-width: 899px) {
+  .hm-page { min-height: 100vh; background: #1e47f7; }
+  .hm-stage {
+    position: relative; width: 100%; height: auto; min-height: 100vh;
+    transform: none !important; overflow: visible; background: transparent; opacity: 1;
+    display: flex; flex-direction: column;
+  }
+  .hm-corners, .hm-content-bg, .hm-tab { display: none; }
+
+  .hm-topbar {
+    position: relative; height: 72px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 16px; gap: 12px;
+  }
+  .hm-logo-link { position: static; width: 92px; height: 48px; flex: 0 0 auto; }
+  .hm-logout {
+    position: static; width: auto; height: 42px; padding: 0 14px 0 10px; gap: 8px;
+    font-size: 18px; border-radius: 16px; margin-left: auto;
+  }
+  .hm-logout img { width: 24px; height: 20px; }
+  .hm-logout span { padding-top: 2px; }
+  .hm-menu-btn {
+    display: flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 42px; height: 42px; padding: 0 10px; border: 0; border-radius: 14px;
+    background: rgba(223, 255, 134, 0.18); cursor: pointer;
+  }
+  .hm-menu-btn span {
+    display: block; height: 3px; border-radius: 3px; background: #dfff86;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+  .hm-menu-btn.is-open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hm-menu-btn.is-open span:nth-child(2) { opacity: 0; }
+  .hm-menu-btn.is-open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  .hm-nav {
+    position: absolute; inset: auto 12px auto 12px; top: 76px; z-index: 10;
+    display: flex; flex-direction: column; gap: 4px; padding: 10px;
+    background: #1e47f7; border-radius: 22px; box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.45);
+    opacity: 0; transform: translateY(-8px); pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .hm-nav.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .hm-nav-item {
+    position: static; transform: none !important; height: 52px; padding: 0 16px; border-radius: 14px;
+    font-size: 19px; width: 100%; justify-content: flex-start; left: auto !important;
+  }
+  .hm-nav-item.is-active { background: #fff; font-size: 19px; padding-bottom: 0; }
+  .hm-nav-item span::after { bottom: -5px; height: 2px; }
+
+  .hm-main {
+    flex: 1; background: #fff; border-radius: 28px 28px 0 0; padding: 14px 10px 24px;
+  }
+  .hm-card {
+    position: relative; left: auto; top: auto; width: 100%; height: auto;
+    border-radius: 30px; overflow: hidden; padding: 20px 12px 0;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .hm-deco-top { left: -10px; top: -10px; width: 150px; height: auto; z-index: 0; }
+  .hm-deco-bottom { left: auto; right: -20px; top: auto; bottom: 120px; width: 170px; height: auto; z-index: 0; }
+  .hm-arrow { display: none; }
+  .hm-man {
+    position: relative; left: auto; top: auto; width: min(260px, 72%); height: auto;
+    align-self: flex-end; margin-right: -8px; z-index: 1;
+  }
+  .hm-title {
+    position: relative; top: auto; margin-top: 18px; font-size: clamp(26px, 7.4vw, 44px); line-height: 1.28;
+  }
+  .hm-search {
+    position: relative; left: auto; top: auto; width: 100%; max-width: 520px; height: auto;
+    margin-top: 22px; padding: 6px; border-radius: 20px; display: flex; gap: 6px;
+  }
+  .hm-search-input {
+    position: static; flex: 1; min-width: 0; width: auto; height: 54px; border-radius: 16px;
+    border-width: 2px; padding: 0 12px; font-size: clamp(12.5px, 3.5vw, 16px);
+  }
+  .hm-search-btn { position: static; flex: 0 0 54px; width: 54px; height: 54px; border-radius: 16px; }
+  .hm-search-btn svg { width: 54px; height: 54px; }
+  .hm-woman {
+    position: relative; left: auto; top: auto; width: min(300px, 82%); height: auto;
+    align-self: flex-start; margin: 24px 0 0 -6px;
+  }
+}

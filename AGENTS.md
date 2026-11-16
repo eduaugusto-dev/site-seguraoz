@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project structure
+
+- Each page's UI lives in its own folder (`src/home/` for the Home: component + CSS); the route file in `src/routes/` only wires `head()` and the component. Why: keeps pages isolated and easy to find.
+- Page CSS uses a page-specific class prefix (Home uses `hm-`). Why: route stylesheets stay loaded after client navigation, so generic class names (e.g. login's `.stage`, `.logo`) would leak between pages.
+- Desktop pages reproduce the reference mockup on a fixed-size stage scaled with JS; below 900px they switch to a stacked flow layout. Why: pixel fidelity to the design on large screens without horizontal scroll on phones.
