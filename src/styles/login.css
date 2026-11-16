@@ -79,9 +79,12 @@
   border: 2px solid #111; border-radius: 4px; background: transparent; margin: 0;
   cursor: pointer; position: relative;
 }
+.remember input:checked {
+  background: #1e47f7; border-color: #1e47f7;
+}
 .remember input:checked::after {
   content: ""; position: absolute; left: 7px; top: 2px; width: 7px; height: 13px;
-  border: solid #111; border-width: 0 3px 3px 0; transform: rotate(45deg);
+  border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg);
 }
 
 .btn-main {

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import logo from "@/assets/seguraoz-jupiter-logo.png.asset.json";
 import illustration from "@/assets/login-illustration.png.asset.json";
 import eyeClosed from "@/assets/eye-closed.png.asset.json";
+import eyeOpen from "@/assets/eye-open.png.asset.json";
 import "@/styles/login.css";
 
 export const Route = createFileRoute("/")({
@@ -22,15 +23,6 @@ export const Route = createFileRoute("/")({
 const STORAGE_KEY = "jupiter_login_id";
 const W = 1920;
 const H = 1200;
-
-function OpenEye() {
-  return (
-    <svg className="eye-img eye-open" viewBox="0 0 500 500" aria-hidden="true">
-      <path d="M40 250 C120 120 380 120 460 250 C380 380 120 380 40 250 Z" fill="none" stroke="currentColor" strokeWidth="34" />
-      <circle cx="250" cy="250" r="62" fill="currentColor" />
-    </svg>
-  );
-}
 
 function LoginPage() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -125,7 +117,7 @@ function LoginPage() {
               onClick={toggleEye}
             >
               <img className="eye-img eye-closed" src={eyeClosed.url} alt="" />
-              <OpenEye />
+              <img className="eye-img eye-open" src={eyeOpen.url} alt="" />
             </button>
           </div>
           <label className="remember">
