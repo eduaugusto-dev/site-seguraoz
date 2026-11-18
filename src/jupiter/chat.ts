@@ -12,6 +12,7 @@ export interface ChatMessage {
 
 const STORAGE_KEY = "seguraoz:jupiter:messages";
 const PENDING_KEY = "seguraoz:jupiter:pending";
+let pendingQuestion: string | null = null;
 
 const normalize = (s: string) =>
   s
@@ -81,56 +82,24 @@ export function formatDate(ts: number): string {
 }
 
 export function loadConversations(): Conversation[] {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(CONVERSATIONS_KEY) || "[]");
-    if (!Array.isArray(parsed)) return [];
-    return parsed.flatMap((entry) => {
-      if (!entry || typeof entry.id !== "string" || !Array.isArray(entry.messages)) return [];
-      const messages: ChatMessage[] = entry.messages.filter(
-        (message: unknown): message is ChatMessage => {
-          if (!message || typeof message !== "object") return false;
-          const m = message as Partial<ChatMessage>;
-          return typeof m.id === "string" && (m.role === "user" || m.role === "jupiter") &&
-            typeof m.text === "string" && typeof m.createdAt === "number" && Number.isFinite(m.createdAt);
-        },
-      );
-      const first = messages.find((message) => message.role === "user" && message.text.trim());
-      if (!first) return [];
-      return [{
-        id: entry.id,
-        title: first.text.trim(),
-        date: formatDate(first.createdAt),
-        status: entry.status === "Resolvido" ? "Resolvido" as const : "Em andamento" as const,
-        messages,
-      }];
-    });
-  } catch {
-    return [];
-  }
+  clearLegacyChatStorage();
+  return [];
 }
 
-function storeConversations(list: Conversation[]) {
+/** Retira somente os dados de chat da demonstração anterior; não toca no login. */
+function clearLegacyChatStorage() {
   try {
-    localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(list));
+    localStorage.removeItem(CONVERSATIONS_KEY);
+    localStorage.removeItem(STORAGE_KEY);
   } catch {
     /* armazenamento indisponível */
   }
-}
-
-function getActiveId(): string | null {
   try {
-    return sessionStorage.getItem(ACTIVE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(ACTIVE_KEY);
+    sessionStorage.removeItem(PENDING_KEY);
   } catch {
-    return null;
-  }
-}
-
-function setActiveId(id: string | null) {
-  try {
-    if (id) sessionStorage.setItem(ACTIVE_KEY, id);
-    else sessionStorage.removeItem(ACTIVE_KEY);
-  } catch {
-    /* ignorado */
+    /* armazenamento indisponível */
   }
 }
 
@@ -158,44 +127,34 @@ export function upsertConversation(
   return { list: [conv, ...older], id: conv.id };
 }
 
-/** Mensagens da conversa aberta nesta aba. */
+/** Nesta etapa, mensagens existem apenas no estado da página de chat. */
 export function loadMessages(): ChatMessage[] {
-  const id = getActiveId();
-  if (!id) return [];
-  return loadConversations().find((c) => c.id === id)?.messages ?? [];
+  clearLegacyChatStorage();
+  return [];
 }
 
-export function saveMessages(messages: ChatMessage[]) {
-  const { list, id } = upsertConversation(loadConversations(), getActiveId(), messages);
-  storeConversations(list);
-  setActiveId(id);
+/** Ponto de integração preservado, sem gravação na demonstração atual. */
+export function saveMessages(_messages: ChatMessage[]) {
+  clearLegacyChatStorage();
 }
 
-/** Abre uma conversa do histórico no chat. */
-export function openConversation(id: string) {
-  setActiveId(id);
+/** Histórico desativado; não restaura mensagens de outras páginas. */
+export function openConversation(_id: string) {
+  clearLegacyChatStorage();
 }
 
 /** Próxima visita ao chat começa uma conversa nova. */
 export function startNewConversation() {
-  setActiveId(null);
+  clearLegacyChatStorage();
 }
 
 /** Guarda uma pergunta feita fora do chat (ex.: na Home) para ser enviada ao abrir o Júpiter. */
 export function queueQuestion(text: string) {
-  try {
-    sessionStorage.setItem(PENDING_KEY, text);
-  } catch {
-    /* ignorado */
-  }
+  pendingQuestion = text.trim() || null;
 }
 
 export function takeQueuedQuestion(): string | null {
-  try {
-    const text = sessionStorage.getItem(PENDING_KEY);
-    sessionStorage.removeItem(PENDING_KEY);
-    return text?.trim() ? text.trim() : null;
-  } catch {
-    return null;
-  }
+  const text = pendingQuestion;
+  pendingQuestion = null;
+  return text;
 }

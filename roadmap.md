@@ -1,4 +1,4 @@
-# Histórico adjustments
-- [x] Only show history for conversations containing a sent question; verify first-message registration.
-- [x] Restore the original background box without replacing the character.
-- [x] Run focused tests and verify both states on desktop and mobile.
+# Disable demo history
+- [x] Disable all conversation storage and restoration; clear legacy chat data only.
+- [x] Keep history empty with its original artwork and preserve the future table.
+- [x] Verify demo replies, empty history and reset on navigation/reload.
