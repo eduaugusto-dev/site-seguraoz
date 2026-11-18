@@ -52,6 +52,7 @@ export function HistoricoPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [ready, setReady] = useState(false);
   const [conversations, setConversations] = useState<Conversation[] | null>(null);
+  const hasHistory = (conversations?.length ?? 0) > 0;
 
   useIsoLayoutEffect(() => {
     const fit = () => {
@@ -75,9 +76,9 @@ export function HistoricoPage() {
 
   useIsoLayoutEffect(() => {
     const measure = () => {
-      const item = NAV.find((n) => n.id === active)!;
+      const item = NAV.find((n) => n.id === active);
       const el = itemRefs.current[active];
-      if (!el) return;
+      if (!item || !el) return;
       const width = el.offsetWidth + item.pad * 2;
       const center = "tabCenter" in item ? item.tabCenter : item.center;
       setTab({ left: center - width / 2, width });
@@ -87,7 +88,14 @@ export function HistoricoPage() {
   }, [active]);
 
   useIsoLayoutEffect(() => {
-    setConversations(loadConversations());
+    const refresh = () => setConversations(loadConversations());
+    refresh();
+    window.addEventListener("storage", refresh);
+    window.addEventListener("pageshow", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("pageshow", refresh);
+    };
   }, []);
 
   const open = (id: string) => {
@@ -154,17 +162,19 @@ export function HistoricoPage() {
         </header>
 
         <main className="hs-main">
-          {conversations && conversations.length === 0 && (
+          {conversations !== null && !hasHistory && (
             <section className="hs-empty" aria-labelledby="hs-empty-title">
-              <img
-                className="hs-empty-ill"
-                src={emptyIll.url}
-                alt="Pessoa procurando dentro de uma pasta vazia"
-              />
+              <div className="hs-empty-art">
+                <img
+                  className="hs-empty-ill"
+                  src={emptyIll.url}
+                  alt="Pessoa procurando dentro de uma pasta vazia"
+                />
+              </div>
               <div className="hs-empty-text">
                 <h1 className="hs-empty-title" id="hs-empty-title">
                   Você <span className="hs-hl">ainda</span> não tem <br className="hs-br" />
-                  conversas com o Júpiter.
+                  conversas com Júpiter.
                 </h1>
                 <p className="hs-empty-sub">Converse com o Júpiter e descubra uma nova forma de ser atendido.</p>
                 <button type="button" className="hs-btn hs-btn--primary" onClick={newChat}>
@@ -177,7 +187,7 @@ export function HistoricoPage() {
             </section>
           )}
 
-          {conversations && conversations.length > 0 && (
+          {conversations !== null && hasHistory && (
             <section className="hs-list" aria-labelledby="hs-title">
               <div className="hs-list-head">
                 <Arrow className="hs-head-arrow" down />

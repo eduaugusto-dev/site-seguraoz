@@ -1,11 +1,52 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
-import { createMessage, upsertConversation } from "@/jupiter/chat";
+import { createMessage, formatDate, loadConversations, saveMessages, startNewConversation, upsertConversation } from "@/jupiter/chat";
 import { routeTree } from "@/routeTree.gen";
 
 describe("Histórico", () => {
+  afterEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it("starts empty when no conversations are stored", () => {
+    localStorage.clear();
+    expect(loadConversations()).toEqual([]);
+  });
+
+  it("ignores placeholder records without a sent question", () => {
+    localStorage.setItem("seguraoz:jupiter:conversations", JSON.stringify([
+      { id: "placeholder", title: "Férias", messages: [] },
+      { id: "bot-only", messages: [createMessage("jupiter", "Olá")] },
+      { id: "blank", messages: [createMessage("user", "   ")] },
+    ]));
+    expect(loadConversations()).toEqual([]);
+  });
+
+  it("records the first sent message immediately with its question, date and status", () => {
+    localStorage.clear();
+    startNewConversation();
+    const question = createMessage("user", "Quando fico de férias?");
+    saveMessages([question]);
+    expect(loadConversations()).toEqual([{
+      id: question.id,
+      title: "Quando fico de férias?",
+      date: formatDate(question.createdAt),
+      status: "Em andamento",
+      messages: [question],
+    }]);
+  });
+
+  it("uses the first question rather than a stored placeholder title", () => {
+    const first = createMessage("user", "Como consulto meu ponto?");
+    localStorage.setItem("seguraoz:jupiter:conversations", JSON.stringify([
+      { id: first.id, title: "Título fictício", status: "Resolvido", messages: [first, createMessage("user", "E as férias?")] },
+    ]));
+    expect(loadConversations()[0]?.title).toBe("Como consulto meu ponto?");
+    expect(loadConversations()[0]?.status).toBe("Resolvido");
+  });
   it("is reachable at /historico", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     expect(router.matchRoutes("/historico").at(-1)?.routeId).toBe("/historico");

@@ -83,7 +83,27 @@ export function formatDate(ts: number): string {
 export function loadConversations(): Conversation[] {
   try {
     const parsed = JSON.parse(localStorage.getItem(CONVERSATIONS_KEY) || "[]");
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((entry) => {
+      if (!entry || typeof entry.id !== "string" || !Array.isArray(entry.messages)) return [];
+      const messages: ChatMessage[] = entry.messages.filter(
+        (message: unknown): message is ChatMessage => {
+          if (!message || typeof message !== "object") return false;
+          const m = message as Partial<ChatMessage>;
+          return typeof m.id === "string" && (m.role === "user" || m.role === "jupiter") &&
+            typeof m.text === "string" && typeof m.createdAt === "number" && Number.isFinite(m.createdAt);
+        },
+      );
+      const first = messages.find((message) => message.role === "user" && message.text.trim());
+      if (!first) return [];
+      return [{
+        id: entry.id,
+        title: first.text.trim(),
+        date: formatDate(first.createdAt),
+        status: entry.status === "Resolvido" ? "Resolvido" as const : "Em andamento" as const,
+        messages,
+      }];
+    });
   } catch {
     return [];
   }
@@ -120,7 +140,7 @@ export function upsertConversation(
   id: string | null,
   messages: ChatMessage[],
 ): { list: Conversation[]; id: string | null } {
-  const first = messages.find((m) => m.role === "user");
+  const first = messages.find((m) => m.role === "user" && m.text.trim());
   if (!first) return { list, id };
   const existing = id ? list.find((c) => c.id === id) : undefined;
   if (existing) {

@@ -73,6 +73,7 @@
 }
 
 :root {
+  --illustration-backdrop: oklch(0.9518334 0.1515061 121.530623);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
