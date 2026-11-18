@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as JupiterRouteImport } from './routes/jupiter'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -31,30 +37,34 @@ const JupiterRoute = JupiterRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/historico': typeof HistoricoRoute
   '/home': typeof HomeRoute
   '/jupiter': typeof JupiterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/historico': typeof HistoricoRoute
   '/home': typeof HomeRoute
   '/jupiter': typeof JupiterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/historico': typeof HistoricoRoute
   '/home': typeof HomeRoute
   '/jupiter': typeof JupiterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/jupiter'
+  fullPaths: '/' | '/historico' | '/home' | '/jupiter'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/jupiter'
-  id: '__root__' | '/' | '/home' | '/jupiter'
+  to: '/' | '/historico' | '/home' | '/jupiter'
+  id: '__root__' | '/' | '/historico' | '/home' | '/jupiter'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HistoricoRoute: typeof HistoricoRoute
   HomeRoute: typeof HomeRoute
   JupiterRoute: typeof JupiterRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HistoricoRoute: HistoricoRoute,
   HomeRoute: HomeRoute,
   JupiterRoute: JupiterRoute,
 }

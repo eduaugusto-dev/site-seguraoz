@@ -57,22 +57,108 @@ export function createMessage(role: ChatRole, text: string): ChatMessage {
   };
 }
 
-export function loadMessages(): ChatMessage[] {
+// ---------- Histórico de conversas (compartilhado com a página Histórico) ----------
+
+export type ConversationStatus = "Em andamento" | "Resolvido";
+
+export interface Conversation {
+  id: string;
+  /** Sempre a primeira pergunta enviada pelo colaborador. */
+  title: string;
+  /** Data no formato dd/mm/aaaa. */
+  date: string;
+  status: ConversationStatus;
+  messages: ChatMessage[];
+}
+
+const CONVERSATIONS_KEY = "seguraoz:jupiter:conversations";
+const ACTIVE_KEY = "seguraoz:jupiter:active";
+
+export function formatDate(ts: number): string {
+  const d = new Date(ts);
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+export function loadConversations(): Conversation[] {
   try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
+    const parsed = JSON.parse(localStorage.getItem(CONVERSATIONS_KEY) || "[]");
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
 }
 
-export function saveMessages(messages: ChatMessage[]) {
+function storeConversations(list: Conversation[]) {
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(list));
   } catch {
-    /* armazenamento indisponível: a conversa fica só na memória */
+    /* armazenamento indisponível */
   }
+}
+
+function getActiveId(): string | null {
+  try {
+    return sessionStorage.getItem(ACTIVE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setActiveId(id: string | null) {
+  try {
+    if (id) sessionStorage.setItem(ACTIVE_KEY, id);
+    else sessionStorage.removeItem(ACTIVE_KEY);
+  } catch {
+    /* ignorado */
+  }
+}
+
+/** Grava (ou atualiza) a conversa a partir das mensagens; o título é a 1ª pergunta e não muda. */
+export function upsertConversation(
+  list: Conversation[],
+  id: string | null,
+  messages: ChatMessage[],
+): { list: Conversation[]; id: string | null } {
+  const first = messages.find((m) => m.role === "user");
+  if (!first) return { list, id };
+  const existing = id ? list.find((c) => c.id === id) : undefined;
+  if (existing) {
+    return { list: list.map((c) => (c.id === id ? { ...c, messages } : c)), id };
+  }
+  const conv: Conversation = {
+    id: first.id,
+    title: first.text,
+    date: formatDate(first.createdAt),
+    status: "Em andamento",
+    messages,
+  };
+  // Demonstração: ao iniciar uma nova conversa, as anteriores passam a "Resolvido".
+  const older = list.map((c) => ({ ...c, status: "Resolvido" as const }));
+  return { list: [conv, ...older], id: conv.id };
+}
+
+/** Mensagens da conversa aberta nesta aba. */
+export function loadMessages(): ChatMessage[] {
+  const id = getActiveId();
+  if (!id) return [];
+  return loadConversations().find((c) => c.id === id)?.messages ?? [];
+}
+
+export function saveMessages(messages: ChatMessage[]) {
+  const { list, id } = upsertConversation(loadConversations(), getActiveId(), messages);
+  storeConversations(list);
+  setActiveId(id);
+}
+
+/** Abre uma conversa do histórico no chat. */
+export function openConversation(id: string) {
+  setActiveId(id);
+}
+
+/** Próxima visita ao chat começa uma conversa nova. */
+export function startNewConversation() {
+  setActiveId(null);
 }
 
 /** Guarda uma pergunta feita fora do chat (ex.: na Home) para ser enviada ao abrir o Júpiter. */

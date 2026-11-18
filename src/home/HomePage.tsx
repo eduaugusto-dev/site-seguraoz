@@ -7,7 +7,7 @@ import decoBottom from "@/assets/home/home-deco-bottom.webp.asset.json";
 import woman from "@/assets/home/home-woman.webp.asset.json";
 import man from "@/assets/home/home-man.webp.asset.json";
 import arrow from "@/assets/home/home-arrow.webp.asset.json";
-import { queueQuestion } from "@/jupiter/chat";
+import { queueQuestion, startNewConversation } from "@/jupiter/chat";
 import "./home.css";
 
 const W = 1920;
@@ -77,6 +77,7 @@ export function HomePage() {
     e.preventDefault();
     const text = query.trim();
     if (!text) return;
+    startNewConversation();
     queueQuestion(text);
     navigate({ to: "/jupiter" });
   };
@@ -108,6 +109,10 @@ export function HomePage() {
                   setMenuOpen(false);
                   if (n.id === "jupiter") {
                     navigate({ to: "/jupiter" });
+                    return;
+                  }
+                  if (n.id === "historico") {
+                    navigate({ to: "/historico" });
                     return;
                   }
                   setActive(n.id);

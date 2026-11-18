@@ -171,6 +171,10 @@ export function JupiterPage() {
                     navigate({ to: "/home" });
                     return;
                   }
+                  if (n.id === "historico") {
+                    navigate({ to: "/historico" });
+                    return;
+                  }
                   setActive(n.id);
                 }}
               >
