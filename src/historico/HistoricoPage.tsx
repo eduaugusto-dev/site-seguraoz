@@ -135,6 +135,7 @@ export function HistoricoPage() {
                   setMenuOpen(false);
                   if (n.id === "inicio") navigate({ to: "/home" });
                   else if (n.id === "jupiter") navigate({ to: "/jupiter" });
+                  else if (n.id === "documentos") navigate({ to: "/documentos" });
                   else setActive(n.id);
                 }}
               >

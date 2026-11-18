@@ -115,6 +115,10 @@ export function HomePage() {
                     navigate({ to: "/historico" });
                     return;
                   }
+                   if (n.id === "documentos") {
+                     navigate({ to: "/documentos" });
+                     return;
+                   }
                   setActive(n.id);
                 }}
               >

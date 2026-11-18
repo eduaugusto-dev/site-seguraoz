@@ -33,5 +33,6 @@ use the editor.
 
 - Each page's UI lives in its own folder (`src/home/` for the Home: component + CSS); the route file in `src/routes/` only wires `head()` and the component. Why: keeps pages isolated and easy to find.
 - Page CSS uses a page-specific class prefix (Home uses `hm-`). Why: route stylesheets stay loaded after client navigation, so generic class names (e.g. login's `.stage`, `.logo`) would leak between pages.
+- Document library cards use independent controls with extracted artwork and transient click feedback, not file fetching. Why: preserves the reference while keeping document interactions frontend-only.
 - Desktop pages reproduce the reference mockup on a fixed-size stage scaled with JS; below 900px they switch to a stacked flow layout. Why: pixel fidelity to the design on large screens without horizontal scroll on phones.
 - Júpiter replies and future history seams live in `src/jupiter/chat.ts`; current messages live only in the mounted chat page, history adapters return no records and remove legacy chat storage, and Home question handoff uses a one-shot in-memory value. Why: the demo keeps working without message persistence while preserving the future table and API seams.

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocumentosRouteImport } from './routes/documentos'
 import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as JupiterRouteImport } from './routes/jupiter'
@@ -17,6 +18,11 @@ import { Route as JupiterRouteImport } from './routes/jupiter'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentosRoute = DocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoricoRoute = HistoricoRouteImport.update({
@@ -37,12 +43,14 @@ const JupiterRoute = JupiterRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/documentos': typeof DocumentosRoute
   '/historico': typeof HistoricoRoute
   '/home': typeof HomeRoute
   '/jupiter': typeof JupiterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/documentos': typeof DocumentosRoute
   '/historico': typeof HistoricoRoute
   '/home': typeof HomeRoute
   '/jupiter': typeof JupiterRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/documentos': typeof DocumentosRoute
   '/historico': typeof HistoricoRoute
   '/home': typeof HomeRoute
   '/jupiter': typeof JupiterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/historico' | '/home' | '/jupiter'
+  fullPaths: '/' | '/documentos' | '/historico' | '/home' | '/jupiter'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/historico' | '/home' | '/jupiter'
-  id: '__root__' | '/' | '/historico' | '/home' | '/jupiter'
+  to: '/' | '/documentos' | '/historico' | '/home' | '/jupiter'
+  id: '__root__' | '/' | '/documentos' | '/historico' | '/home' | '/jupiter'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DocumentosRoute: typeof DocumentosRoute
   HistoricoRoute: typeof HistoricoRoute
   HomeRoute: typeof HomeRoute
   JupiterRoute: typeof JupiterRoute
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documentos': {
+      id: '/documentos'
+      path: '/documentos'
+      fullPath: '/documentos'
+      preLoaderRoute: typeof DocumentosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/historico': {
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DocumentosRoute: DocumentosRoute,
   HistoricoRoute: HistoricoRoute,
   HomeRoute: HomeRoute,
   JupiterRoute: JupiterRoute,
