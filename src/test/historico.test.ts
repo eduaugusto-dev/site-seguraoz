@@ -14,12 +14,12 @@ describe("Histórico", () => {
   it("titles a conversation with the first question and keeps it after more messages", () => {
     const q1 = createMessage("user", "Quando fico de férias?");
     let r = upsertConversation([], null, [q1]);
-    expect(r.list[0].title).toBe("Quando fico de férias?");
-    expect(r.list[0].status).toBe("Em andamento");
+    expect(r.list[0]!.title).toBe("Quando fico de férias?");
+    expect(r.list[0]!.status).toBe("Em andamento");
     r = upsertConversation(r.list, r.id, [q1, createMessage("jupiter", "x"), createMessage("user", "E o salário?")]);
     expect(r.list).toHaveLength(1);
-    expect(r.list[0].title).toBe("Quando fico de férias?");
-    expect(r.list[0].messages).toHaveLength(3);
+    expect(r.list[0]!.title).toBe("Quando fico de férias?");
+    expect(r.list[0]!.messages).toHaveLength(3);
   });
 
   it("does not record a conversation without a question", () => {
