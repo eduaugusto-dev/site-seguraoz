@@ -125,9 +125,9 @@ export function HistoricoPage() {
                 aria-current={active === n.id ? "page" : undefined}
                 onClick={() => {
                   setMenuOpen(false);
-                  if (n.id === "inicio") return navigate({ to: "/home" });
-                  if (n.id === "jupiter") return navigate({ to: "/jupiter" });
-                  setActive(n.id);
+                  if (n.id === "inicio") navigate({ to: "/home" });
+                  else if (n.id === "jupiter") navigate({ to: "/jupiter" });
+                  else setActive(n.id);
                 }}
               >
                 <span>{n.label}</span>
