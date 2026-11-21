@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import logo from "@/assets/seguraoz-jupiter-logo.png.asset.json";
-import illustration from "@/assets/login-illustration.png.asset.json";
-import eyeClosed from "@/assets/eye-closed.png.asset.json";
-import eyeOpen from "@/assets/eye-open.png.asset.json";
-import "@/styles/login.css";
 
+import logo from "@/assets/seguraoz-jupiter-logo.png";
+import illustration from "@/assets/login-illustration.png";
+import eyeClosed from "@/assets/eye-closed.png";
+import eyeOpen from "@/assets/eye-open.png";
+
+import "@/styles/login.css";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -85,7 +86,7 @@ function LoginPage() {
   return (
     <div className="login-page">
       <div className="stage" ref={stageRef}>
-        <img className="logo" src={logo.url} alt="SeguraOz Jupiter" />
+        <img className="logo" src={logo} alt="SeguraOz Jupiter" />
         <h1 className="title">
           Bem-vindo ao seu
           <br />
@@ -118,8 +119,8 @@ function LoginPage() {
               aria-label={showPass ? "Ocultar senha" : "Mostrar senha"}
               onClick={toggleEye}
             >
-              <img className="eye-img eye-closed" src={eyeClosed.url} alt="" />
-              <img className="eye-img eye-open" src={eyeOpen.url} alt="" />
+              <img className="eye-img eye-closed" src={eyeClosed} alt="" />
+              <img className="eye-img eye-open" src={eyeOpen} alt="" />
             </button>
           </div>
           <label className="remember">
@@ -138,7 +139,7 @@ function LoginPage() {
           </button>
         </form>
 
-        <img className="illustration" src={illustration.url} alt="Ilustração de acesso seguro" />
+        <img className="illustration" src={illustration} alt="Ilustração de acesso seguro" />
         <p className="footer">Protegido por SeguraOz©2026</p>
       </div>
     </div>

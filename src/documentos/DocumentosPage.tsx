@@ -1,19 +1,21 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/home/home-logo.webp.asset.json";
-import logout from "@/assets/home/home-icon-logout.webp.asset.json";
-import people from "@/assets/documentos/pessoas.webp.asset.json";
-import headArrow from "@/assets/documentos/titulo-seta.webp.asset.json";
-import cardArrow from "@/assets/documentos/cartao-seta.webp.asset.json";
-import ferias from "@/assets/documentos/ferias.webp.asset.json";
-import folha from "@/assets/documentos/folha.webp.asset.json";
-import beneficios from "@/assets/documentos/beneficios.webp.asset.json";
-import licencas from "@/assets/documentos/licencas.webp.asset.json";
-import horas from "@/assets/documentos/banco-horas.webp.asset.json";
-import admissao from "@/assets/documentos/admissao.webp.asset.json";
-import desligamento from "@/assets/documentos/desligamento.webp.asset.json";
-import ponto from "@/assets/documentos/ponto.webp.asset.json";
+
+import logo from "@/assets/home/home-logo.webp";
+import logout from "@/assets/home/home-icon-logout.webp";
+import people from "@/assets/documentos/documentos-pessoas.webp";
+import headArrow from "@/assets/documentos/documentos-titulo-seta.webp";
+import cardArrow from "@/assets/documentos/documentos-cartao-seta.webp";
+import ferias from "@/assets/documentos/documentos-ferias.webp";
+import folha from "@/assets/documentos/documentos-folha.webp";
+import beneficios from "@/assets/documentos/documentos-beneficios.webp";
+import licencas from "@/assets/documentos/documentos-licencas.webp";
+import horas from "@/assets/documentos/documentos-banco-horas.webp";
+import admissao from "@/assets/documentos/documentos-admissao.webp";
+import desligamento from "@/assets/documentos/documentos-desligamento.webp";
+import ponto from "@/assets/documentos/documentos-ponto.webp";
+
 import "./documentos.css";
 
 const DOCUMENTS = [
@@ -70,7 +72,7 @@ export function DocumentosPage() {
         <div className="dc-content-bg" aria-hidden />
         <header className="dc-topbar">
           <Link to="/home" className="dc-logo-link" aria-label="SeguraOz Júpiter — Início">
-            <img className="dc-logo" src={logo.url} alt="SeguraOz Júpiter" />
+            <img className="dc-logo" src={logo} alt="SeguraOz Júpiter" />
           </Link>
           <nav className={`dc-nav${menuOpen ? " is-open" : ""}`} aria-label="Menu principal">
             <div className="dc-tab" style={{ left: 908, width: 365 }} aria-hidden />
@@ -81,19 +83,19 @@ export function DocumentosPage() {
             ))}
             <Button variant="ghost" className="dc-nav-item" style={{ left: 1439.5 }} onClick={() => { setMenuOpen(false); setFeedback("Configurações ainda não disponíveis."); }}><span>Configurações</span></Button>
           </nav>
-          <Button asChild className="dc-logout"><Link to="/"><img src={logout.url} alt="" /><span>Sair</span></Link></Button>
+          <Button asChild className="dc-logout"><Link to="/"><img src={logout} alt="" /><span>Sair</span></Link></Button>
           <Button variant="ghost" className={`dc-menu-btn${menuOpen ? " is-open" : ""}`} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></Button>
         </header>
         <main className="dc-main">
-          <div className="dc-heading"><img className="dc-head-arrow" src={headArrow.url} alt="" /><h1 className="dc-title">Documentos RH</h1></div>
+          <div className="dc-heading"><img className="dc-head-arrow" src={headArrow} alt="" /><h1 className="dc-title">Documentos RH</h1></div>
           <p className="dc-sub">Biblioteca inteligente de políticas e documentos de Recursos Humanos.</p>
-          <img className="dc-people" src={people.url} alt="Duas pessoas trabalhando juntas em um computador" />
+          <img className="dc-people" src={people} alt="Duas pessoas trabalhando juntas em um computador" />
           <section className="dc-grid" aria-label="Documentos de Recursos Humanos">
             {DOCUMENTS.map((doc) => (
               <Button key={doc.name} variant="ghost" className="dc-card" aria-label={`Abrir ${doc.name}`} onClick={() => setFeedback(`${doc.name}: documento indisponível nesta demonstração.`)}>
                 <svg className="dc-card-shape" viewBox="0 0 435 314" preserveAspectRatio="none" aria-hidden><path fill="currentColor" d="M199.911 25.551C202.42 30.719 207.661 34 213.405 34H420C428.284 34 435 40.716 435 49V289C435 302.807 423.807 314 410 314H25C11.1929 314 0 302.807 0 289V25C0 11.193 11.1929 0 25 0H178.115C183.86 0 189.1 3.281 191.609 8.449L199.911 25.551Z" /></svg>
-                <img className="dc-icon" src={doc.icon.url} alt="" />
-                <span className="dc-go" aria-hidden><img src={cardArrow.url} alt="" /></span>
+                <img className="dc-icon" src={doc.icon} alt="" />
+                <span className="dc-go" aria-hidden><img src={cardArrow} alt="" /></span>
                 <span className="dc-card-text"><span className="dc-card-name">{doc.name === "Ponto Eletrônico" ? <>Ponto<br />Eletrônico</> : doc.name === "Folha de pagamento" ? <>Folha de<br />pagamento</> : doc.name}</span><span className="dc-card-date">Atualizado em {doc.date}</span></span>
               </Button>
             ))}

@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
-import logo from "@/assets/home/home-logo.webp.asset.json";
-import logoutIcon from "@/assets/home/home-icon-logout.webp.asset.json";
-import decoTop from "@/assets/home/home-deco-top.webp.asset.json";
-import decoBottom from "@/assets/home/home-deco-bottom.webp.asset.json";
-import woman from "@/assets/home/home-woman.webp.asset.json";
-import man from "@/assets/home/home-man.webp.asset.json";
-import arrow from "@/assets/home/home-arrow.webp.asset.json";
+
+import logo from "@/assets/home/home-logo.webp";
+import logoutIcon from "@/assets/home/home-icon-logout.webp";
+import decoTop from "@/assets/home/home-deco-top.webp";
+import decoBottom from "@/assets/home/home-deco-bottom.webp";
+import woman from "@/assets/home/home-woman.webp";
+import man from "@/assets/home/home-man.webp";
+import arrow from "@/assets/home/home-arrow.webp";
+
 import { queueQuestion, startNewConversation } from "@/jupiter/chat";
 import "./home.css";
 
@@ -90,7 +92,7 @@ export function HomePage() {
 
         <header className="hm-topbar">
           <Link to="/home" className="hm-logo-link" aria-label="SeguraOz Júpiter — Início">
-            <img className="hm-logo" src={logo.url} alt="SeguraOz Júpiter" />
+            <img className="hm-logo" src={logo} alt="SeguraOz Júpiter" />
           </Link>
 
           <nav className={`hm-nav${menuOpen ? " is-open" : ""}`} aria-label="Menu principal">
@@ -128,7 +130,7 @@ export function HomePage() {
           </nav>
 
           <Link to="/" className="hm-logout">
-            <img src={logoutIcon.url} alt="" />
+            <img src={logoutIcon} alt="" />
             <span>Sair</span>
           </Link>
 
@@ -147,9 +149,9 @@ export function HomePage() {
 
         <main className="hm-main">
           <section className="hm-card">
-            <img className="hm-img hm-deco-bottom" src={decoBottom.url} alt="" />
-            <img className="hm-img hm-deco-top" src={decoTop.url} alt="" />
-            <img className="hm-img hm-man" src={man.url} alt="Pessoa usando notebook com balão de conversa" />
+            <img className="hm-img hm-deco-bottom" src={decoBottom} alt="" />
+            <img className="hm-img hm-deco-top" src={decoTop} alt="" />
+            <img className="hm-img hm-man" src={man} alt="Pessoa usando notebook com balão de conversa" />
 
             <h1 className="hm-title">
               <span>Faça perguntas.</span>
@@ -179,8 +181,8 @@ export function HomePage() {
               </button>
             </form>
 
-            <img className="hm-img hm-arrow" src={arrow.url} alt="" />
-            <img className="hm-img hm-woman" src={woman.url} alt="Pessoa trabalhando no notebook" />
+            <img className="hm-img hm-arrow" src={arrow} alt="" />
+            <img className="hm-img hm-woman" src={woman} alt="Pessoa trabalhando no notebook" />
           </section>
         </main>
       </div>

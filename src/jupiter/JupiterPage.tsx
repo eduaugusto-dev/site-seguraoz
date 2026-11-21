@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
-import logo from "@/assets/home/home-logo.webp.asset.json";
-import logoutIcon from "@/assets/home/home-icon-logout.webp.asset.json";
-import jupiterLogo from "@/assets/jupiter/jupiter-logo.webp.asset.json";
-import person from "@/assets/jupiter/jupiter-person.webp.asset.json";
-import jupiterAvatar from "@/assets/jupiter/jupiter-avatar.webp.asset.json";
-import userAvatar from "@/assets/jupiter/user-avatar.webp.asset.json";
+
+import logo from "@/assets/home/home-logo.webp";
+import logoutIcon from "@/assets/home/home-icon-logout.webp";
+import jupiterLogo from "@/assets/jupiter/jupiter-logo.webp";
+import person from "@/assets/jupiter/jupiter-person.webp";
+import jupiterAvatar from "@/assets/jupiter/jupiter-avatar.webp";
+import userAvatar from "@/assets/jupiter/user-avatar.webp";
+
 import {
   askJupiter,
   createMessage,
@@ -150,7 +152,7 @@ export function JupiterPage() {
 
         <header className="jp-topbar">
           <Link to="/home" className="jp-logo-link" aria-label="SeguraOz Júpiter — Início">
-            <img className="jp-logo" src={logo.url} alt="SeguraOz Júpiter" />
+            <img className="jp-logo" src={logo} alt="SeguraOz Júpiter" />
           </Link>
 
           <nav className={`jp-nav${menuOpen ? " is-open" : ""}`} aria-label="Menu principal">
@@ -188,7 +190,7 @@ export function JupiterPage() {
           </nav>
 
           <Link to="/" className="jp-logout">
-            <img src={logoutIcon.url} alt="" />
+            <img src={logoutIcon} alt="" />
             <span>Sair</span>
           </Link>
 
@@ -215,7 +217,7 @@ export function JupiterPage() {
                     <p className="jp-bubble">{m.text}</p>
                     <img
                       className="jp-avatar"
-                      src={m.role === "user" ? userAvatar.url : jupiterAvatar.url}
+                      src={m.role === "user" ? userAvatar : jupiterAvatar}
                       alt=""
                     />
                   </div>
@@ -225,7 +227,7 @@ export function JupiterPage() {
             </div>
           ) : (
             <section className="jp-empty" aria-labelledby="jp-empty-title">
-              <img className="jp-brand" src={jupiterLogo.url} alt="Júpiter" />
+              <img className="jp-brand" src={jupiterLogo} alt="Júpiter" />
               <div className="jp-intro">
                 <h1 className="jp-title" id="jp-empty-title">
                   Como posso <br />
@@ -253,7 +255,7 @@ export function JupiterPage() {
               </div>
               <img
                 className="jp-person"
-                src={person.url}
+                src={person}
                 alt="Pessoa pensativa segurando um tablet, com balões de salário, horário e presente"
               />
             </section>

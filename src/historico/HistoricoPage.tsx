@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import logo from "@/assets/home/home-logo.webp.asset.json";
-import logoutIcon from "@/assets/home/home-icon-logout.webp.asset.json";
-import emptyIll from "@/assets/historico/historico-empty.webp.asset.json";
-import searchIll from "@/assets/historico/historico-search.webp.asset.json";
+
+import logo from "@/assets/home/home-logo.webp";
+import logoutIcon from "@/assets/home/home-icon-logout.webp";
+import emptyIll from "@/assets/historico/historico-empty.webp";
+import searchIll from "@/assets/historico/historico-search.webp";
+
 import {
   loadConversations,
   openConversation,
@@ -116,7 +118,7 @@ export function HistoricoPage() {
 
         <header className="hs-topbar">
           <Link to="/home" className="hs-logo-link" aria-label="SeguraOz Júpiter — Início">
-            <img className="hs-logo" src={logo.url} alt="SeguraOz Júpiter" />
+            <img className="hs-logo" src={logo} alt="SeguraOz Júpiter" />
           </Link>
 
           <nav className={`hs-nav${menuOpen ? " is-open" : ""}`} aria-label="Menu principal">
@@ -145,7 +147,7 @@ export function HistoricoPage() {
           </nav>
 
           <Link to="/" className="hs-logout">
-            <img src={logoutIcon.url} alt="" />
+            <img src={logoutIcon} alt="" />
             <span>Sair</span>
           </Link>
 
@@ -168,7 +170,7 @@ export function HistoricoPage() {
               <div className="hs-empty-art">
                 <img
                   className="hs-empty-ill"
-                  src={emptyIll.url}
+                  src={emptyIll}
                   alt="Pessoa procurando dentro de uma pasta vazia"
                 />
               </div>
@@ -199,7 +201,7 @@ export function HistoricoPage() {
               <p className="hs-sub">Suas conversas anteriores com Júpiter.</p>
               <img
                 className="hs-search-ill"
-                src={searchIll.url}
+                src={searchIll}
                 alt="Pessoa examinando um monitor com uma lupa"
               />
               <div className="hs-table" role="table" aria-label="Conversas com o Júpiter">
