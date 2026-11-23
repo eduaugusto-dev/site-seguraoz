@@ -179,6 +179,10 @@ export function JupiterPage() {
                     navigate({ to: "/documentos" });
                     return;
                   }
+                  if (n.id === "configuracoes") {
+                    navigate({ to: "/configuracoes" });
+                    return;
+                  }
                   setActive(n.id);
                 }}
               >
