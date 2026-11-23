@@ -1,5 +1,8 @@
-// Lógica do chat do Júpiter (somente frontend, sem servidor).
-// `askJupiter` é o ponto onde, no futuro, entra a chamada à API FastAPI do Júpiter.
+
+import { sendChatMessage } from "@/services/api";
+
+// Lógica do chat do Júpiter conectada à API FastAPI.
+// Mensagens e ID da conversa permanecem somente em memória.
 
 export type ChatRole = "user" | "jupiter";
 
@@ -10,43 +13,24 @@ export interface ChatMessage {
   createdAt: number;
 }
 
+let currentConversationId = "";
+
 const STORAGE_KEY = "seguraoz:jupiter:messages";
 const PENDING_KEY = "seguraoz:jupiter:pending";
 let pendingQuestion: string | null = null;
 
-const normalize = (s: string) =>
-  s
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-
-export const DEMO_REPLIES = {
-  ferias:
-    "Claro! Consultei seu saldo de férias: você possui 18 dias disponíveis, com período aquisitivo encerrando em 12/03/2027. Lembre-se de que as férias devem ser solicitadas com no mínimo 30 dias de antecedência. Deseja iniciar uma solicitação?",
-  beneficios:
-    "Você conta hoje com vale-refeição, plano de saúde e plano odontológico. Quer que eu mostre os detalhes de algum desses benefícios?",
-  ponto:
-    "Seu último registro de ponto foi hoje às 08:02 e não há marcações pendentes nesta semana. Deseja consultar o espelho de ponto do mês?",
-  folha:
-    "Sua folha de pagamento mais recente já está disponível em Documentos. Quer que eu apresente um resumo dos valores?",
-  padrao:
-    "Esta é uma resposta demonstrativa do Júpiter. Em breve poderei responder às suas dúvidas sobre benefícios, ponto eletrônico, férias e folha de pagamento.",
-} as const;
-
-/** Resposta demonstrativa escolhida por palavra-chave. */
-export function demoReply(question: string): string {
-  const q = normalize(question);
-  if (q.includes("feria")) return DEMO_REPLIES.ferias;
-  if (q.includes("beneficio")) return DEMO_REPLIES.beneficios;
-  if (q.includes("ponto")) return DEMO_REPLIES.ponto;
-  if (q.includes("folha") || q.includes("pagamento") || q.includes("holerite") || q.includes("salario"))
-    return DEMO_REPLIES.folha;
-  return DEMO_REPLIES.padrao;
-}
-
-/** Ponto de integração: hoje devolve a resposta demonstrativa local. */
+/**
+ * Envia a pergunta à API e retorna a resposta real do Júpiter.
+ * O conversation_id é mantido em memória para dar continuidade
+ * às mensagens da mesma conversa.
+ */
 export async function askJupiter(question: string): Promise<string> {
-  return demoReply(question);
+  const result = await sendChatMessage(question, currentConversationId);
+
+  // Atualiza o ID retornado pelo backend.
+  currentConversationId = result.conversation_id;
+
+  return result.response;
 }
 
 export function createMessage(role: ChatRole, text: string): ChatMessage {
@@ -94,6 +78,7 @@ function clearLegacyChatStorage() {
   } catch {
     /* armazenamento indisponível */
   }
+
   try {
     sessionStorage.removeItem(STORAGE_KEY);
     sessionStorage.removeItem(ACTIVE_KEY);
@@ -111,10 +96,16 @@ export function upsertConversation(
 ): { list: Conversation[]; id: string | null } {
   const first = messages.find((m) => m.role === "user" && m.text.trim());
   if (!first) return { list, id };
+
   const existing = id ? list.find((c) => c.id === id) : undefined;
+
   if (existing) {
-    return { list: list.map((c) => (c.id === id ? { ...c, messages } : c)), id };
+    return {
+      list: list.map((c) => (c.id === id ? { ...c, messages } : c)),
+      id,
+    };
   }
+
   const conv: Conversation = {
     id: first.id,
     title: first.text,
@@ -122,8 +113,10 @@ export function upsertConversation(
     status: "Em andamento",
     messages,
   };
+
   // Demonstração: ao iniciar uma nova conversa, as anteriores passam a "Resolvido".
   const older = list.map((c) => ({ ...c, status: "Resolvido" as const }));
+
   return { list: [conv, ...older], id: conv.id };
 }
 
@@ -146,6 +139,7 @@ export function openConversation(_id: string) {
 /** Próxima visita ao chat começa uma conversa nova. */
 export function startNewConversation() {
   clearLegacyChatStorage();
+  currentConversationId = "";
 }
 
 /** Guarda uma pergunta feita fora do chat (ex.: na Home) para ser enviada ao abrir o Júpiter. */

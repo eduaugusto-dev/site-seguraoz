@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
@@ -34,7 +35,25 @@ const NAV = [
 
 type NavId = (typeof NAV)[number]["id"];
 
-const SUGGESTIONS = ["Benefícios", "Ponto Eletrônico", "Férias", "Folhas de pagamento"];
+// Atalhos enviam perguntas completas para o backend.
+const SUGGESTIONS = [
+  {
+    label: "Benefícios",
+    question: "Quais benefícios a empresa oferece?",
+  },
+  {
+    label: "Ponto Eletrônico",
+    question: "Como funciona o ponto eletrônico?",
+  },
+  {
+    label: "Férias",
+    question: "Gostaria de saber quais serão minhas férias em 2026?",
+  },
+  {
+    label: "Folhas de pagamento",
+    question: "Gostaria de consultar informações sobre minha folha de pagamento.",
+  },
+];
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -48,6 +67,7 @@ export function JupiterPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const restored = useRef(false);
+
   const [active, setActive] = useState<NavId>("jupiter");
   const [tab, setTab] = useState({ left: 532, width: 267 });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -64,7 +84,9 @@ export function JupiterPage() {
       const page = pageRef.current;
       const stage = stageRef.current;
       if (!page || !stage) return;
+
       const vw = document.documentElement.clientWidth;
+
       if (isMobile()) {
         stage.style.transform = "";
         page.style.height = "";
@@ -73,10 +95,13 @@ export function JupiterPage() {
         stage.style.transform = `scale(${s})`;
         page.style.height = `${Math.max(H * s, window.innerHeight)}px`;
       }
+
       setReady(true);
     };
+
     fit();
     window.addEventListener("resize", fit);
+
     return () => window.removeEventListener("resize", fit);
   }, []);
 
@@ -86,33 +111,59 @@ export function JupiterPage() {
       const item = NAV.find((n) => n.id === active)!;
       const el = itemRefs.current[active];
       if (!el) return;
+
       const width = el.offsetWidth + item.pad * 2;
       const center = "tabCenter" in item ? item.tabCenter : item.center;
+
       setTab({ left: center - width / 2, width });
     };
+
     measure();
     document.fonts?.ready.then(measure).catch(() => {});
   }, [active]);
 
+  // Envia a mensagem à API e trata eventuais falhas.
   const send = (raw: string) => {
     const text = raw.trim();
     if (!text) return;
+
     setMessages((prev) => [...prev, createMessage("user", text)]);
     setDraft("");
+
     window.setTimeout(async () => {
-      const reply = await askJupiter(text);
-      setMessages((prev) => [...prev, createMessage("jupiter", reply)]);
+      try {
+        const reply = await askJupiter(text);
+        setMessages((prev) => [...prev, createMessage("jupiter", reply)]);
+      } catch (error) {
+        console.error("Erro ao enviar mensagem para o Júpiter:", error);
+
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Não foi possível conectar ao Júpiter no momento. Tente novamente.";
+
+        setMessages((prev) => [
+          ...prev,
+          createMessage(
+            "jupiter",
+            `Desculpe, não consegui processar sua solicitação.\n\n${errorMessage}`
+          ),
+        ]);
+      }
     }, REPLY_DELAY);
   };
 
   // Restaura a conversa da sessão e envia uma pergunta vinda da Home, se houver.
   useIsoLayoutEffect(() => {
     if (restored.current) return;
+
     restored.current = true;
     setMessages(loadMessages());
     setLoaded(true);
+
     const queued = takeQueuedQuestion();
     if (queued) send(queued);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -123,11 +174,18 @@ export function JupiterPage() {
   // Mantém a última mensagem visível.
   useEffect(() => {
     if (!hasMessages) return;
+
     if (isMobile()) {
-      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
     } else {
       const el = threadRef.current;
-      el?.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      el?.scrollTo({
+        top: el.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [messages.length, hasMessages]);
 
@@ -145,7 +203,10 @@ export function JupiterPage() {
   };
 
   return (
-    <div className={`jp-page${ready ? " is-ready" : ""}${hasMessages ? " is-chat" : ""}`} ref={pageRef}>
+    <div
+      className={`jp-page${ready ? " is-ready" : ""}${hasMessages ? " is-chat" : ""}`}
+      ref={pageRef}
+    >
       <div className="jp-stage" ref={stageRef}>
         <div className="jp-corners" aria-hidden />
         <div className="jp-content-bg" aria-hidden />
@@ -157,6 +218,7 @@ export function JupiterPage() {
 
           <nav className={`jp-nav${menuOpen ? " is-open" : ""}`} aria-label="Menu principal">
             <div className="jp-tab" style={{ left: tab.left, width: tab.width }} aria-hidden />
+
             {NAV.map((n) => (
               <button
                 key={n.id}
@@ -169,18 +231,22 @@ export function JupiterPage() {
                 aria-current={active === n.id ? "page" : undefined}
                 onClick={() => {
                   setMenuOpen(false);
+
                   if (n.id === "inicio") {
                     navigate({ to: "/home" });
                     return;
                   }
+
                   if (n.id === "historico") {
                     navigate({ to: "/historico" });
                     return;
                   }
+
                   if (n.id === "documentos") {
                     navigate({ to: "/documentos" });
                     return;
                   }
+
                   setActive(n.id);
                 }}
               >
@@ -211,28 +277,38 @@ export function JupiterPage() {
           {hasMessages ? (
             <div className="jp-thread" ref={threadRef} aria-live="polite">
               <div className="jp-day">Hoje</div>
+
               {messages.map((m) => (
-                <div key={m.id} className={`jp-msg jp-msg--${m.role === "user" ? "user" : "bot"}`}>
+                <div
+                  key={m.id}
+                  className={`jp-msg jp-msg--${m.role === "user" ? "user" : "bot"}`}
+                >
                   <div className="jp-bubble-wrap">
                     <p className="jp-bubble">{m.text}</p>
+
                     <img
                       className="jp-avatar"
                       src={m.role === "user" ? userAvatar : jupiterAvatar}
                       alt=""
                     />
                   </div>
-                  <span className="jp-msg-label">{m.role === "user" ? "Você" : "Júpiter"}</span>
+
+                  <span className="jp-msg-label">
+                    {m.role === "user" ? "Você" : "Júpiter"}
+                  </span>
                 </div>
               ))}
             </div>
           ) : (
             <section className="jp-empty" aria-labelledby="jp-empty-title">
               <img className="jp-brand" src={jupiterLogo} alt="Júpiter" />
+
               <div className="jp-intro">
                 <h1 className="jp-title" id="jp-empty-title">
                   Como posso <br />
                   ajudar <span className="jp-hl">você</span> hoje?
                 </h1>
+
                 <p className="jp-sub">
                   <svg className="jp-sub-arrow" viewBox="0 0 43 43" fill="none" aria-hidden>
                     <path
@@ -243,16 +319,24 @@ export function JupiterPage() {
                       strokeLinejoin="round"
                     />
                   </svg>
+
                   <span>Você pode começar por aqui.</span>
                 </p>
+
                 <div className="jp-chips">
                   {SUGGESTIONS.map((s) => (
-                    <button key={s} type="button" className="jp-chip" onClick={() => send(s)}>
-                      {s}
+                    <button
+                      key={s.label}
+                      type="button"
+                      className="jp-chip"
+                      onClick={() => send(s.question)}
+                    >
+                      {s.label}
                     </button>
                   ))}
                 </div>
               </div>
+
               <img
                 className="jp-person"
                 src={person}
@@ -272,6 +356,7 @@ export function JupiterPage() {
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onKeyDown}
             />
+
             <button type="submit" className="jp-send" aria-label="Enviar mensagem">
               <svg viewBox="0 0 94 94" fill="none" aria-hidden>
                 <path
