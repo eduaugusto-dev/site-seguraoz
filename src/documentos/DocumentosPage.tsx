@@ -33,6 +33,7 @@ const NAV = [
   { label: "Júpiter", to: "/jupiter", center: 579.5 },
   { label: "Histórico", to: "/historico", center: 778 },
   { label: "Documentos", to: "/documentos", center: 1090.5 },
+  { label: "Configurações", to: "/configuracoes", center: 1439.5 },
 ] as const;
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -81,7 +82,6 @@ export function DocumentosPage() {
                 <Link to={item.to} aria-current={item.to === "/documentos" ? "page" : undefined} onClick={() => setMenuOpen(false)}><span>{item.label}</span></Link>
               </Button>
             ))}
-            <Button variant="ghost" className="dc-nav-item" style={{ left: 1439.5 }} onClick={() => { setMenuOpen(false); setFeedback("Configurações ainda não disponíveis."); }}><span>Configurações</span></Button>
           </nav>
           <Button asChild className="dc-logout"><Link to="/"><img src={logout} alt="" /><span>Sair</span></Link></Button>
           <Button variant="ghost" className={`dc-menu-btn${menuOpen ? " is-open" : ""}`} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></Button>

@@ -1,0 +1,387 @@
+/* Configurações do Júpiter — reprodução do layout de referência (palco 1920x1695) */
+.cf-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #1e47f7;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+.cf-page *,
+.cf-page *::before,
+.cf-page *::after { box-sizing: border-box; margin: 0; }
+
+.cf-stage {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1920px;
+  height: 1695px;
+  background: #1e47f7;
+  transform-origin: top left;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.cf-page.is-ready .cf-stage { opacity: 1; }
+
+/* Painel branco com os quatro cantos arredondados; o azul da página aparece
+   em volta e na faixa do rodapé. */
+.cf-content-bg {
+  position: absolute; left: 0; top: 85px; right: 0; bottom: 219px;
+  background: #fff; border-radius: 44px; z-index: 1;
+}
+
+/* ---------- Barra superior ---------- */
+.cf-topbar {
+  position: absolute; left: 0; top: 0; width: 100%; height: 85px;
+  background: #1e47f7; z-index: 2;
+}
+.cf-logo-link { position: absolute; left: 59.7px; top: 12.6px; width: 138.6px; height: 72.4px; z-index: 4; }
+.cf-logo { width: 100%; height: 100%; display: block; }
+
+.cf-nav { position: absolute; inset: 0; z-index: 3; }
+.cf-tab {
+  position: absolute; top: 0; height: 85px; left: 1201px; width: 370px;
+  background: #fff; border-radius: 25px 25px 0 0;
+  transition: left 0.38s cubic-bezier(0.65, 0, 0.35, 1), width 0.38s cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+}
+.cf-tab::before,
+.cf-tab::after {
+  content: ""; position: absolute; bottom: 0; width: 25px; height: 25px;
+}
+.cf-tab::before { left: -25px; background: radial-gradient(circle at 0 0, transparent 24.5px, #fff 25px); }
+.cf-tab::after { right: -25px; background: radial-gradient(circle at 100% 0, transparent 24.5px, #fff 25px); }
+
+.cf-nav-item {
+  position: absolute; top: 0; height: 85px; transform: translateX(-50%);
+  display: flex; align-items: center; padding: 0 0 2px;
+  border: 0; background: transparent; cursor: pointer; white-space: nowrap;
+  font-family: "Poppins", sans-serif; font-size: 30px; font-weight: 400; line-height: 1;
+  color: #dfff86; transition: color 0.25s ease, opacity 0.25s ease;
+}
+.cf-nav-item span { position: relative; }
+.cf-nav-item span::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 3px; border-radius: 3px;
+  background: currentColor; transform: scaleX(0); transition: transform 0.25s ease;
+}
+.cf-nav-item:not(.is-active):hover { color: #fff; }
+.cf-nav-item:not(.is-active):hover span::after { transform: scaleX(1); }
+.cf-nav-item.is-active { color: #1e47f7; font-size: 37px; font-weight: 500; cursor: default; padding-bottom: 1px; }
+.cf-nav-item:focus-visible { outline: 3px solid #dfff86; outline-offset: -6px; border-radius: 12px; }
+
+.cf-logout {
+  position: absolute; left: 1735px; top: 15px; width: 125px; height: 55px; z-index: 4;
+  display: flex; align-items: center; gap: 10px; padding-left: 12.8px;
+  background: #dfff86; border-radius: 21px; text-decoration: none;
+  color: #1e47f7; font-size: 28px; font-weight: 500; line-height: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.cf-logout img { width: 32.5px; height: 27.8px; display: block; }
+.cf-logout span { padding-top: 3px; }
+.cf-logout:hover { background: #eaffb0; transform: translateY(-2px); box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.35); }
+.cf-logout:active { transform: translateY(0); }
+
+.cf-menu-btn { display: none; }
+
+/* ---------- Título ---------- */
+.cf-head { position: absolute; left: 0; top: 85px; width: 100%; height: 320px; z-index: 2; }
+.cf-head-arrow {
+  position: absolute; left: 55px; top: 57px; width: 84px; height: 84px;
+  color: #000; pointer-events: none;
+}
+.cf-title {
+  position: absolute; left: 172px; top: 63px;
+  font-size: 73px; line-height: 1; font-weight: 700; color: #000; white-space: nowrap;
+}
+.cf-sub {
+  position: absolute; left: 62px; top: 171px; max-width: 780px;
+  font-size: 35px; line-height: 53px; font-weight: 400; color: #000;
+}
+
+/* ---------- Cartões ---------- */
+.cf-card { position: absolute; z-index: 2; }
+.cf-card-icon { position: absolute; width: 74px; height: 74px; display: block; pointer-events: none; }
+.cf-card-title { position: absolute; line-height: 1; white-space: nowrap; }
+.cf-label { position: absolute; font-size: 40px; line-height: 1; font-weight: 400; color: #1e47f7; }
+
+/* Perfil */
+.cf-card--perfil {
+  left: 60px; top: 407px; width: 890px; height: 1014px;
+  background: #1e47f7; border-radius: 50px;
+}
+.cf-card--perfil .cf-card-icon { left: 50px; top: 41px; }
+.cf-card--perfil .cf-card-title { left: 158px; top: 48px; font-size: 55px; font-weight: 500; color: #dfff86; }
+
+.cf-avatar {
+  position: absolute; left: 26px; top: 137px; width: 324px; height: 324px;
+  display: block; pointer-events: none;
+}
+.cf-name {
+  position: absolute; left: 383px; top: 218px;
+  font-size: 72px; line-height: 1; font-weight: 500; color: #dfff86; white-space: nowrap;
+}
+.cf-role {
+  position: absolute; left: 384px; top: 305px;
+  font-size: 50px; line-height: 1; font-weight: 400; color: #dfff86; white-space: nowrap;
+}
+
+.cf-field {
+  position: absolute; left: 51px; width: 812px; height: 176px;
+  border: 4px solid #dfff86; border-radius: 24px; background: #1e47f7;
+}
+.cf-field:nth-of-type(1) { top: 485px; }
+.cf-field:nth-of-type(2) { top: 662px; }
+.cf-field-icon { position: absolute; left: 17px; top: 41px; width: 60px; height: 60px; display: block; }
+.cf-field-label {
+  position: absolute; left: 111px; top: 26px;
+  font-size: 35px; line-height: 1; font-weight: 400; color: #dfff86;
+}
+.cf-field-value {
+  position: absolute; left: 110px; top: 79px;
+  font-size: 35px; line-height: 1; font-weight: 400; color: #dfff86; white-space: nowrap;
+}
+.cf-field-input {
+  position: absolute; left: 105px; top: 74px; width: 660px; height: 62px;
+  background: rgba(223, 255, 134, 0.14); border: 0; border-radius: 14px;
+  padding: 0 16px; font-family: "Poppins", sans-serif; font-size: 32px; color: #dfff86;
+  outline: none; box-shadow: inset 0 -3px 0 0 rgba(223, 255, 134, 0.55);
+}
+.cf-field-input:focus { background: rgba(223, 255, 134, 0.24); box-shadow: inset 0 -3px 0 0 #dfff86; }
+
+.cf-name-input {
+  position: absolute; left: 384px; top: 214px; width: 460px; height: 74px;
+  background: rgba(223, 255, 134, 0.12); border: 3px solid #dfff86; border-radius: 16px;
+  padding: 0 18px; font-family: "Poppins", sans-serif; font-size: 56px; font-weight: 500;
+  color: #dfff86; outline: none;
+}
+.cf-name-input:focus { background: rgba(223, 255, 134, 0.22); }
+
+.cf-edit {
+  position: absolute; left: 27px; top: 837px; width: 838px; height: 151px;
+  background: #dfff86; border: 0; border-radius: 25px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 32px; padding-right: 32px;
+  color: #1e47f7; font-family: "Poppins", sans-serif; font-size: 45px; font-weight: 500; line-height: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.cf-edit-icon { width: 60px; height: 60px; display: block; }
+.cf-edit:hover { background: #eaffb0; transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.45); }
+.cf-edit:active { transform: translateY(0); }
+.cf-edit:focus-visible { outline: 4px solid #fff; outline-offset: 4px; }
+
+/* Aparência */
+.cf-card--aparencia {
+  left: 970px; top: 407px; width: 890px; height: 492px;
+  background: #fff; border: 4px solid #bfbfbf; border-radius: 40px;
+}
+.cf-card--aparencia .cf-card-icon { left: 46px; top: 35px; }
+.cf-card--aparencia .cf-card-title { left: 154px; top: 44px; font-size: 55px; font-weight: 500; color: #1e47f7; }
+.cf-card--aparencia .cf-label { left: 23px; top: 144px; }
+
+.cf-themes { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.cf-theme {
+  position: absolute; top: 211px; height: 262px; border-radius: 27px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center;
+  background: #fff; border: 8px solid #bfbfbf; padding: 0;
+  font-family: "Poppins", sans-serif; font-size: 36px; font-weight: 400; line-height: 1;
+  color: #7a7a7a; transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.cf-theme img { width: 100px; height: 100px; margin-top: 38px; display: block; }
+.cf-theme span { margin-top: 18px; font-size: 40px; }
+.cf-theme:nth-child(1) { left: 27px; width: 260px; }
+.cf-theme:nth-child(2) { left: 318px; width: 258px; }
+.cf-theme:nth-child(3) { left: 606px; width: 258px; }
+.cf-theme:hover { transform: translateY(-3px); border-color: #1e47f7; }
+.cf-theme:focus-visible { outline: 4px solid #1e47f7; outline-offset: 4px; }
+.cf-theme.is-on { background: #1e47f7; border-color: #1e47f7; color: #dfff86; }
+
+/* Preferências */
+.cf-card--preferencias {
+  left: 970px; top: 923px; width: 890px; height: 497px;
+  background: #dfff86; border-radius: 50px; overflow: hidden;
+}
+.cf-watermark {
+  position: absolute; left: 252px; top: -43px; width: 836px; height: 697px;
+  display: block; pointer-events: none; opacity: 0.9;
+}
+.cf-card--preferencias .cf-card-icon { left: 50px; top: 44px; }
+.cf-card--preferencias .cf-card-title { left: 160px; top: 52px; font-size: 55px; font-weight: 500; color: #1e47f7; }
+.cf-card--preferencias .cf-label { left: 27px; top: 151px; }
+
+.cf-select {
+  position: absolute; left: 27px; top: 213px; width: 703px; height: 82px;
+  background: #fff; border-radius: 25px; z-index: 2;
+}
+.cf-select select {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  appearance: none; -webkit-appearance: none; border: 0; background: transparent;
+  padding: 0 90px 0 31px; border-radius: 25px; cursor: pointer;
+  font-family: "Poppins", sans-serif; font-size: 35px; font-weight: 400; color: #1e47f7;
+  outline: none;
+}
+.cf-select select:focus-visible { outline: 4px solid #1e47f7; outline-offset: 3px; }
+.cf-select select option { color: #1e47f7; background: #fff; font-size: 20px; }
+.cf-chevron {
+  position: absolute; right: 34px; top: 30px; width: 46px; height: 21px;
+  color: #bfbfbf; pointer-events: none;
+}
+.cf-card-arrow {
+  position: absolute; left: 22px; top: 341px; width: 115px; height: 115px;
+  color: #1e47f7; pointer-events: none; z-index: 2;
+}
+
+/* ---------- Rodapé ---------- */
+.cf-footer {
+  position: absolute; left: 0; top: 1476px; width: 100%; height: 219px; z-index: 3;
+}
+.cf-cancel,
+.cf-save {
+  position: absolute; cursor: pointer; border-radius: 38px;
+  font-family: "Poppins", sans-serif; font-size: 42px; font-weight: 400; line-height: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.cf-cancel {
+  left: 62px; top: 55px; width: 886px; height: 111px;
+  background: transparent; border: 4px solid #dfff86; color: #dfff86;
+}
+.cf-save {
+  left: 970px; top: 53px; width: 890px; height: 115px;
+  background: #dfff86; border: 0; color: #1e47f7;
+}
+.cf-cancel:hover { background: rgba(223, 255, 134, 0.14); transform: translateY(-2px); }
+.cf-save:hover { background: #eaffb0; transform: translateY(-2px); box-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.5); }
+.cf-cancel:active, .cf-save:active { transform: translateY(0); }
+.cf-cancel:focus-visible, .cf-save:focus-visible { outline: 4px solid #fff; outline-offset: 4px; }
+
+/* ---------- Tema escuro (aplicado à página de configurações) ---------- */
+html[data-theme="escuro"] .cf-page { background: #0b1020; }
+html[data-theme="escuro"] .cf-stage { background: #0b1020; }
+html[data-theme="escuro"] .cf-content-bg { background: #141824; }
+html[data-theme="escuro"] .cf-title,
+html[data-theme="escuro"] .cf-sub { color: #fff; }
+html[data-theme="escuro"] .cf-head-arrow { color: #dfff86; }
+html[data-theme="escuro"] .cf-card--aparencia { background: #1b2030; border-color: #3a4056; }
+html[data-theme="escuro"] .cf-card--aparencia .cf-card-title,
+html[data-theme="escuro"] .cf-card--aparencia .cf-label { color: #dfff86; }
+html[data-theme="escuro"] .cf-theme { background: #141824; border-color: #3a4056; color: #aeb6cc; }
+html[data-theme="escuro"] .cf-theme.is-on { background: #1e47f7; border-color: #1e47f7; color: #dfff86; }
+html[data-theme="escuro"] .cf-select select { color: #1e47f7; }
+
+/* ---------- Telas estreitas: layout empilhado ---------- */
+@media (max-width: 899px) {
+  .cf-page { min-height: 100vh; background: #1e47f7; }
+  .cf-stage {
+    position: relative; width: 100%; height: auto; min-height: 100vh;
+    transform: none !important; overflow: visible; background: transparent; opacity: 1;
+    display: flex; flex-direction: column;
+  }
+  .cf-content-bg { display: none; }
+
+  .cf-topbar {
+    position: relative; height: 72px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 16px; gap: 12px;
+  }
+  .cf-logo-link { position: static; width: 92px; height: 48px; flex: 0 0 auto; }
+  .cf-logout {
+    position: static; width: auto; height: 42px; padding: 0 14px 0 10px; gap: 8px;
+    font-size: 18px; border-radius: 16px; margin-left: auto;
+  }
+  .cf-logout img { width: 24px; height: 20px; }
+  .cf-logout span { padding-top: 2px; }
+  .cf-menu-btn {
+    display: flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 42px; height: 42px; padding: 0 10px; border: 0; border-radius: 14px;
+    background: rgba(223, 255, 134, 0.18); cursor: pointer;
+  }
+  .cf-menu-btn span {
+    display: block; height: 3px; border-radius: 3px; background: #dfff86;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+  .cf-menu-btn.is-open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .cf-menu-btn.is-open span:nth-child(2) { opacity: 0; }
+  .cf-menu-btn.is-open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  .cf-nav {
+    position: absolute; inset: auto 12px auto 12px; top: 76px; z-index: 10;
+    display: flex; flex-direction: column; gap: 4px; padding: 10px;
+    background: #1e47f7; border-radius: 22px; box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.45);
+    opacity: 0; transform: translateY(-8px); pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .cf-nav.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .cf-nav-item {
+    position: static; transform: none !important; height: 52px; padding: 0 16px; border-radius: 14px;
+    font-size: 19px; width: 100%; justify-content: flex-start; left: auto !important;
+  }
+  .cf-nav-item.is-active { background: #fff; font-size: 19px; padding-bottom: 0; }
+  .cf-nav-item span::after { bottom: -5px; height: 2px; }
+
+  .cf-head {
+    position: relative; left: auto; top: auto; width: 100%; height: auto;
+    background: #fff; border-radius: 28px 28px 0 0; padding: 22px 16px 26px;
+  }
+  .cf-head-arrow { display: none; }
+  .cf-title { position: static; font-size: clamp(28px, 8vw, 44px); white-space: normal; }
+  .cf-sub { position: static; max-width: none; margin-top: 12px; font-size: clamp(15px, 4.2vw, 19px); line-height: 1.5; }
+
+  .cf-card {
+    position: relative !important; left: auto !important; top: auto !important;
+    width: auto !important; height: auto !important; margin: 12px;
+  }
+  .cf-card--perfil { padding: 18px 16px 22px; display: flex; flex-direction: column; align-items: center; }
+  .cf-card--perfil .cf-card-icon { position: static; width: 44px; height: 44px; align-self: flex-start; }
+  .cf-card--perfil .cf-card-title { position: static; align-self: flex-start; margin: 10px 0 4px; font-size: 30px; }
+  .cf-avatar { position: static; width: min(190px, 52%); height: auto; margin-top: 10px; }
+  .cf-name { position: static; margin-top: 10px; font-size: clamp(24px, 7vw, 34px); white-space: normal; text-align: center; }
+  .cf-role { position: static; margin-top: 4px; font-size: clamp(17px, 5vw, 22px); }
+  .cf-name-input {
+    position: static; width: 100%; max-width: 340px; height: 54px; margin-top: 10px;
+    font-size: 26px; border-radius: 14px;
+  }
+  .cf-field {
+    position: static; width: 100%; height: auto; margin-top: 14px;
+    padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .cf-field-icon { position: static; width: 30px; height: 30px; }
+  .cf-field-label { position: static; font-size: 16px; }
+  .cf-field-value { position: static; font-size: 18px; white-space: normal; }
+  .cf-field-input {
+    position: static; width: 100%; height: 48px; font-size: 17px; padding: 0 12px;
+  }
+  .cf-edit {
+    position: static; width: 100%; height: 62px; margin-top: 18px; gap: 14px;
+    font-size: 22px; border-radius: 18px;
+  }
+  .cf-edit-icon { width: 30px; height: 30px; }
+
+  .cf-card--aparencia { padding: 18px 16px 22px; }
+  .cf-card--aparencia .cf-card-icon { position: static; width: 44px; height: 44px; }
+  .cf-card--aparencia .cf-card-title { position: static; margin: 10px 0 0; font-size: 30px; }
+  .cf-card--aparencia .cf-label { position: static; margin-top: 16px; font-size: 20px; }
+  .cf-themes { position: static; display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+  .cf-theme {
+    position: static !important; width: 100% !important; height: 96px !important;
+    flex-direction: row; justify-content: center; gap: 16px; border-radius: 20px;
+    font-size: 20px;
+  }
+  .cf-theme img { width: 40px; height: 40px; margin: 0; }
+  .cf-theme span { margin: 0; }
+
+  .cf-card--preferencias { padding: 18px 16px 22px; }
+  .cf-watermark { display: none; }
+  .cf-card--preferencias .cf-card-icon { position: static; width: 44px; height: 44px; }
+  .cf-card--preferencias .cf-card-title { position: static; margin: 10px 0 0; font-size: 30px; }
+  .cf-card--preferencias .cf-label { position: static; margin-top: 16px; font-size: 20px; }
+  .cf-select { position: static; width: 100%; height: 62px; margin-top: 12px; border-radius: 20px; }
+  .cf-select select { font-size: 20px; padding: 0 60px 0 18px; }
+  .cf-chevron { right: 20px; top: 22px; width: 30px; height: 14px; }
+  .cf-card-arrow { display: none; }
+
+  .cf-footer {
+    position: static; width: 100%; height: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .cf-cancel, .cf-save {
+    position: static; width: 100%; height: 62px; font-size: 21px; border-radius: 20px;
+  }
+}
