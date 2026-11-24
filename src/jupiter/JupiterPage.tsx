@@ -1,6 +1,16 @@
 
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
+
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import logo from "@/assets/home/home-logo.webp";
 import logoutIcon from "@/assets/home/home-icon-logout.webp";
@@ -55,7 +65,8 @@ const SUGGESTIONS = [
   },
 ];
 
-const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+const useIsoLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 const isMobile = () => window.innerWidth < MOBILE;
 
@@ -212,12 +223,23 @@ export function JupiterPage() {
         <div className="jp-content-bg" aria-hidden />
 
         <header className="jp-topbar">
-          <Link to="/home" className="jp-logo-link" aria-label="SeguraOz Júpiter — Início">
+          <Link
+            to="/home"
+            className="jp-logo-link"
+            aria-label="SeguraOz Júpiter — Início"
+          >
             <img className="jp-logo" src={logo} alt="SeguraOz Júpiter" />
           </Link>
 
-          <nav className={`jp-nav${menuOpen ? " is-open" : ""}`} aria-label="Menu principal">
-            <div className="jp-tab" style={{ left: tab.left, width: tab.width }} aria-hidden />
+          <nav
+            className={`jp-nav${menuOpen ? " is-open" : ""}`}
+            aria-label="Menu principal"
+          >
+            <div
+              className="jp-tab"
+              style={{ left: tab.left, width: tab.width }}
+              aria-hidden
+            />
 
             {NAV.map((n) => (
               <button
@@ -246,10 +268,12 @@ export function JupiterPage() {
                     navigate({ to: "/documentos" });
                     return;
                   }
+
                   if (n.id === "configuracoes") {
                     navigate({ to: "/configuracoes" });
                     return;
                   }
+
                   setActive(n.id);
                 }}
               >
@@ -287,7 +311,11 @@ export function JupiterPage() {
                   className={`jp-msg jp-msg--${m.role === "user" ? "user" : "bot"}`}
                 >
                   <div className="jp-bubble-wrap">
-                    <p className="jp-bubble">{m.text}</p>
+                    <div className="jp-bubble jp-markdown">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {m.text}
+                      </ReactMarkdown>
+                    </div>
 
                     <img
                       className="jp-avatar"
@@ -313,7 +341,12 @@ export function JupiterPage() {
                 </h1>
 
                 <p className="jp-sub">
-                  <svg className="jp-sub-arrow" viewBox="0 0 43 43" fill="none" aria-hidden>
+                  <svg
+                    className="jp-sub-arrow"
+                    viewBox="0 0 43 43"
+                    fill="none"
+                    aria-hidden
+                  >
                     <path
                       d="M2 2L41 41M2 41H41V2"
                       stroke="currentColor"
@@ -360,7 +393,11 @@ export function JupiterPage() {
               onKeyDown={onKeyDown}
             />
 
-            <button type="submit" className="jp-send" aria-label="Enviar mensagem">
+            <button
+              type="submit"
+              className="jp-send"
+              aria-label="Enviar mensagem"
+            >
               <svg viewBox="0 0 94 94" fill="none" aria-hidden>
                 <path
                   d="M28 66L67 27M28 27H67V66"

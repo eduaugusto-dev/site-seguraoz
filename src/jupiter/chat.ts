@@ -1,8 +1,10 @@
 
-import { sendChatMessage } from "@/services/api";
+import {
+  sendChatMessage,
+  getConversationMessages,
+} from "@/services/api";
 
-// Lógica do chat do Júpiter conectada à API FastAPI.
-// Mensagens e ID da conversa permanecem somente em memória.
+// Mensagens e identificação da conversa permanecem somente em memória.
 
 export type ChatRole = "user" | "jupiter";
 
@@ -14,141 +16,93 @@ export interface ChatMessage {
 }
 
 let currentConversationId = "";
+let restoredMessages: ChatMessage[] = [];
 
-const STORAGE_KEY = "seguraoz:jupiter:messages";
-const PENDING_KEY = "seguraoz:jupiter:pending";
-let pendingQuestion: string | null = null;
-
-/**
- * Envia a pergunta à API e retorna a resposta real do Júpiter.
- * O conversation_id é mantido em memória para dar continuidade
- * às mensagens da mesma conversa.
- */
 export async function askJupiter(question: string): Promise<string> {
-  const result = await sendChatMessage(question, currentConversationId);
+  const result = await sendChatMessage(
+    question,
+    currentConversationId
+  );
 
-  // Atualiza o ID retornado pelo backend.
   currentConversationId = result.conversation_id;
 
   return result.response;
 }
 
-export function createMessage(role: ChatRole, text: string): ChatMessage {
+export function createMessage(
+  role: ChatRole,
+  text: string
+): ChatMessage {
   return {
-    id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+    id: `${Date.now().toString(36)}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}`,
     role,
     text,
     createdAt: Date.now(),
   };
 }
 
-// ---------- Histórico de conversas (compartilhado com a página Histórico) ----------
-
 export type ConversationStatus = "Em andamento" | "Resolvido";
 
 export interface Conversation {
   id: string;
-  /** Sempre a primeira pergunta enviada pelo colaborador. */
   title: string;
-  /** Data no formato dd/mm/aaaa. */
   date: string;
   status: ConversationStatus;
   messages: ChatMessage[];
 }
 
-const CONVERSATIONS_KEY = "seguraoz:jupiter:conversations";
-const ACTIVE_KEY = "seguraoz:jupiter:active";
-
 export function formatDate(ts: number): string {
   const d = new Date(ts);
   const p = (n: number) => String(n).padStart(2, "0");
+
   return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
 }
 
-export function loadConversations(): Conversation[] {
-  clearLegacyChatStorage();
-  return [];
-}
-
-/** Retira somente os dados de chat da demonstração anterior; não toca no login. */
-function clearLegacyChatStorage() {
-  try {
-    localStorage.removeItem(CONVERSATIONS_KEY);
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    /* armazenamento indisponível */
-  }
-
-  try {
-    sessionStorage.removeItem(STORAGE_KEY);
-    sessionStorage.removeItem(ACTIVE_KEY);
-    sessionStorage.removeItem(PENDING_KEY);
-  } catch {
-    /* armazenamento indisponível */
-  }
-}
-
-/** Grava (ou atualiza) a conversa a partir das mensagens; o título é a 1ª pergunta e não muda. */
-export function upsertConversation(
-  list: Conversation[],
-  id: string | null,
-  messages: ChatMessage[],
-): { list: Conversation[]; id: string | null } {
-  const first = messages.find((m) => m.role === "user" && m.text.trim());
-  if (!first) return { list, id };
-
-  const existing = id ? list.find((c) => c.id === id) : undefined;
-
-  if (existing) {
-    return {
-      list: list.map((c) => (c.id === id ? { ...c, messages } : c)),
-      id,
-    };
-  }
-
-  const conv: Conversation = {
-    id: first.id,
-    title: first.text,
-    date: formatDate(first.createdAt),
-    status: "Em andamento",
-    messages,
-  };
-
-  // Demonstração: ao iniciar uma nova conversa, as anteriores passam a "Resolvido".
-  const older = list.map((c) => ({ ...c, status: "Resolvido" as const }));
-
-  return { list: [conv, ...older], id: conv.id };
-}
-
-/** Nesta etapa, mensagens existem apenas no estado da página de chat. */
+// O histórico é carregado diretamente pela API.
+// Esta função apenas entrega as mensagens restauradas à página.
 export function loadMessages(): ChatMessage[] {
-  clearLegacyChatStorage();
-  return [];
+  const messages = restoredMessages;
+  restoredMessages = [];
+
+  return messages;
 }
 
-/** Ponto de integração preservado, sem gravação na demonstração atual. */
-export function saveMessages(_messages: ChatMessage[]) {
-  clearLegacyChatStorage();
+// Não salva mensagens no navegador.
+export function saveMessages(_messages: ChatMessage[]): void {
+  // Persistência realizada exclusivamente pelo backend.
 }
 
-/** Histórico desativado; não restaura mensagens de outras páginas. */
-export function openConversation(_id: string) {
-  clearLegacyChatStorage();
+// Abre uma conversa existente e recupera suas mensagens.
+export async function openConversation(id: string): Promise<void> {
+  const apiMessages = await getConversationMessages(id);
+
+  restoredMessages = apiMessages.map((message) => ({
+    id: message.id,
+    role: message.role === "assistant" ? "jupiter" : "user",
+    text: message.content,
+    createdAt: new Date(message.created_at).getTime(),
+  }));
+
+  currentConversationId = id;
 }
 
-/** Próxima visita ao chat começa uma conversa nova. */
-export function startNewConversation() {
-  clearLegacyChatStorage();
+// Inicia uma conversa independente.
+export function startNewConversation(): void {
   currentConversationId = "";
+  restoredMessages = [];
 }
 
-/** Guarda uma pergunta feita fora do chat (ex.: na Home) para ser enviada ao abrir o Júpiter. */
-export function queueQuestion(text: string) {
+let pendingQuestion: string | null = null;
+
+export function queueQuestion(text: string): void {
   pendingQuestion = text.trim() || null;
 }
 
 export function takeQueuedQuestion(): string | null {
   const text = pendingQuestion;
   pendingQuestion = null;
+
   return text;
 }

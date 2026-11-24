@@ -122,3 +122,85 @@ export async function getMyConversations(): Promise<ApiConversation[]> {
 
   return response.json() as Promise<ApiConversation[]>;
 }
+
+
+export interface ApiConversationMessage {
+  id: string;
+  conversation_id: string;
+  role: "user" | "assistant";
+  content: string;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export async function getConversationMessages(
+  conversationId: string
+): Promise<ApiConversationMessage[]> {
+  const token = sessionStorage.getItem("jupiter_access_token");
+
+  if (!token) {
+    throw new Error("Sessão expirada. Faça login novamente.");
+  }
+
+  const response = await fetch(
+    `${API_URL}/conversations/${encodeURIComponent(conversationId)}/messages`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+
+    throw new Error(
+      error?.detail || "Não foi possível recuperar as mensagens."
+    );
+  }
+
+  return response.json() as Promise<ApiConversationMessage[]>;
+}
+
+
+export interface EmployeeProfile {
+  id: string;
+  employee_id: string;
+  nome: string;
+  email: string;
+  role: string;
+  cargo: string;
+  departamento: string;
+}
+
+/**
+ * Busca o perfil do colaborador autenticado.
+ * A identificação é realizada pelo JWT no backend.
+ */
+export async function getMyProfile(): Promise<EmployeeProfile> {
+  const token = sessionStorage.getItem("jupiter_access_token");
+
+  if (!token) {
+    throw new Error("Sessão expirada. Faça login novamente.");
+  }
+
+  const response = await fetch(`${API_URL}/auth/perfil`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+
+    throw new Error(
+      error?.detail || "Não foi possível carregar seu perfil."
+    );
+  }
+
+  return response.json() as Promise<EmployeeProfile>;
+}

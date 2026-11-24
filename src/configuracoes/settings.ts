@@ -1,11 +1,3 @@
-// Configurações do Júpiter — somente frontend, sem servidor e sem persistência.
-//
-// O estado vive neste módulo: ele sobrevive à navegação entre páginas dentro da
-// mesma visita, mas volta aos valores padrão quando o site é fechado ou recarregado.
-//
-// Integração futura: quando o frontend for ligado à API, o perfil passa a vir de
-// GET /auth/perfil (nome, e-mail e demais campos do colaborador autenticado),
-// respeitando o token de autenticação já usado pelo app.
 
 export type Theme = "claro" | "escuro" | "sistema";
 
@@ -16,14 +8,6 @@ export interface Profile {
   telefone: string;
 }
 
-/** Dados fictícios, apenas para demonstração visual. */
-export const DEMO_PROFILE: Profile = {
-  nome: "Eduardo A.",
-  cargo: "Colaborador",
-  email: "eduardo@seguraoz.com.br",
-  telefone: "+55 11 99999-9999",
-};
-
 export const LANGUAGES = [
   { value: "pt-BR", label: "Português (BR)" },
   { value: "en-US", label: "English (US)" },
@@ -32,7 +16,14 @@ export const LANGUAGES = [
 
 export const DEFAULT_LANGUAGE = "pt-BR";
 
-let profile: Profile = { ...DEMO_PROFILE };
+// Perfil começa vazio. Os dados pessoais vêm da API.
+let profile: Profile = {
+  nome: "",
+  cargo: "",
+  email: "",
+  telefone: "",
+};
+
 let theme: Theme = "claro";
 let language: string = DEFAULT_LANGUAGE;
 let version = 0;
@@ -41,7 +32,7 @@ const listeners = new Set<() => void>();
 
 function notify() {
   version += 1;
-  listeners.forEach((l) => l());
+  listeners.forEach((listener) => listener());
 }
 
 export function subscribe(listener: () => void): () => void {
@@ -49,7 +40,6 @@ export function subscribe(listener: () => void): () => void {
   return () => listeners.delete(listener);
 }
 
-/** Número que muda a cada alteração — usado como snapshot estável. */
 export function getVersion(): number {
   return version;
 }
@@ -66,13 +56,29 @@ export function getLanguage(): string {
   return language;
 }
 
+/** Atualiza os dados pessoais com a resposta do backend. */
+export function setProfileFromApi(data: {
+  nome: string;
+  cargo: string;
+  email: string;
+}): void {
+  profile = {
+    ...profile,
+    nome: data.nome,
+    cargo: data.cargo,
+    email: data.email,
+  };
+
+  notify();
+}
+
+/** Salva somente o telefone, que ainda não possui endpoint no backend. */
 export function saveProfile(next: Profile): void {
   profile = {
-    nome: next.nome.trim() || profile.nome,
-    cargo: next.cargo.trim() || profile.cargo,
-    email: next.email.trim() || profile.email,
-    telefone: next.telefone.trim() || profile.telefone,
+    ...profile,
+    telefone: next.telefone.trim(),
   };
+
   notify();
 }
 
@@ -87,11 +93,17 @@ export function setLanguage(next: string): void {
   notify();
 }
 
-/** Devolve o perfil aos dados fictícios e a aparência/idioma ao padrão. */
 export function resetSettings(): void {
-  profile = { ...DEMO_PROFILE };
+  profile = {
+    nome: "",
+    cargo: "",
+    email: "",
+    telefone: "",
+  };
+
   theme = "claro";
   language = DEFAULT_LANGUAGE;
+
   applyTheme(theme);
   notify();
 }
@@ -101,29 +113,34 @@ const systemQuery = () =>
     ? window.matchMedia("(prefers-color-scheme: dark)")
     : null;
 
-/** Tema realmente aplicado: "sistema" acompanha a preferência do dispositivo. */
 export function resolvedTheme(theme: Theme): "claro" | "escuro" {
   if (theme !== "sistema") return theme;
-  const q = systemQuery();
-  return q && q.matches ? "escuro" : "claro";
+
+  const query = systemQuery();
+
+  return query && query.matches ? "escuro" : "claro";
 }
 
-/** Marca o tema no <html> para que os estilos possam reagir a ele. */
 export function applyTheme(theme: Theme): void {
   if (typeof document === "undefined") return;
+
   document.documentElement.dataset["theme"] = resolvedTheme(theme);
 }
 
-/** Segue o sistema enquanto o tema "sistema" estiver ativo. */
 export function watchSystemTheme(): () => void {
-  const q = systemQuery();
-  if (!q) return () => {};
+  const query = systemQuery();
+
+  if (!query) return () => {};
+
   const onChange = () => {
     if (theme === "sistema") applyTheme(theme);
   };
-  if (typeof q.addEventListener === "function") {
-    q.addEventListener("change", onChange);
-    return () => q.removeEventListener("change", onChange);
+
+  if (typeof query.addEventListener === "function") {
+    query.addEventListener("change", onChange);
+
+    return () => query.removeEventListener("change", onChange);
   }
+
   return () => {};
 }

@@ -300,3 +300,48 @@
   .jp-send { position: static; flex: 0 0 58px; width: 58px; height: 58px; border-radius: 16px; }
   .jp-send svg { width: 58px; height: 58px; }
 }
+
+/* Renderização Markdown das mensagens */
+.jp-markdown p {
+  margin: 0 0 10px;
+}
+
+.jp-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.jp-markdown strong {
+  font-weight: 700;
+}
+
+.jp-markdown ul,
+.jp-markdown ol {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+
+.jp-markdown li {
+  margin-bottom: 5px;
+}
+
+.jp-markdown h1,
+.jp-markdown h2,
+.jp-markdown h3 {
+  font-weight: 700;
+  margin: 12px 0 8px;
+}
+
+.jp-markdown h1:first-child,
+.jp-markdown h2:first-child,
+.jp-markdown h3:first-child {
+  margin-top: 0;
+}
+
+.jp-markdown code {
+  font-family: monospace;
+}
+
+.jp-markdown pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

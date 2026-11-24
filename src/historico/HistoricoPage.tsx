@@ -155,11 +155,32 @@ export function HistoricoPage() {
     };
   }, []);
 
-  // Abre uma conversa existente.
-  const open = (id: string) => {
-    openConversation(id);
+
+// Abre uma conversa existente e aguarda a recuperação das mensagens.
+const [openingConversation, setOpeningConversation] = useState(false);
+
+const open = async (id: string) => {
+  if (openingConversation) return;
+
+  try {
+    setOpeningConversation(true);
+    setHistoryError(null);
+
+    await openConversation(id);
+
     navigate({ to: "/jupiter" });
-  };
+  } catch (error) {
+    console.error("Erro ao abrir conversa:", error);
+
+    setHistoryError(
+      error instanceof Error
+        ? error.message
+        : "Não foi possível abrir esta conversa."
+    );
+  } finally {
+    setOpeningConversation(false);
+  }
+};
 
   // Inicia uma conversa nova.
   const newChat = () => {
