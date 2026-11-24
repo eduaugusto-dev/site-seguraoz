@@ -81,3 +81,44 @@ export async function sendChatMessage(
 
   return response.json() as Promise<ChatResponse>;
 }
+
+
+export interface ApiConversation {
+  id: string;
+  employee_id: string;
+  title: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  archived_at: string | null;
+}
+
+/**
+ * Busca as conversas do colaborador autenticado.
+ * O backend identifica o colaborador pelo JWT.
+ */
+export async function getMyConversations(): Promise<ApiConversation[]> {
+  const token = sessionStorage.getItem("jupiter_access_token");
+
+  if (!token) {
+    throw new Error("Sessão expirada. Faça login novamente.");
+  }
+
+  const response = await fetch(`${API_URL}/conversations/me`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+
+    throw new Error(
+      error?.detail || "Não foi possível carregar seu histórico."
+    );
+  }
+
+  return response.json() as Promise<ApiConversation[]>;
+}
