@@ -7,3 +7,8 @@
 - [x] Reproduce the reference with eight independent cards and original assets.
 - [x] Connect existing page menus and add frontend-only click feedback.
 - [x] Compare desktop reference and verify tablet/mobile navigation and cards.
+
+# Home continuation
+- [x] Add sections 2–5 with original artwork, company, process, accordion and timeline/footer.
+- [x] Preserve the existing first section and verify desktop/mobile layouts and accordion interactions.
+- [x] Resolve the stale chat test imports reported by the preview and run relevant tests.

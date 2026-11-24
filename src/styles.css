@@ -73,6 +73,11 @@
 }
 
 :root {
+  --home-brand: #1e47f7;
+  --home-highlight: #dfff86;
+  --home-surface: #fff;
+  --home-ink: #000;
+  --home-border: #bfbfbf;
   --documents-accent: oklch(0.4996 0.2633 265.37);
   --documents-surface: oklch(1 0 0);
   --documents-ink: oklch(0 0 0);

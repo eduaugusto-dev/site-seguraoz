@@ -10,6 +10,7 @@ import man from "@/assets/home/home-man.webp";
 import arrow from "@/assets/home/home-arrow.webp";
 
 import { queueQuestion, startNewConversation } from "@/jupiter/chat";
+import { HomeSections } from "./HomeSections";
 import "./home.css";
 
 const W = 1920;
@@ -64,9 +65,9 @@ export function HomePage() {
   // Posiciona a aba branca sob o item ativo.
   useIsoLayoutEffect(() => {
     const measure = () => {
-      const item = NAV.find((n) => n.id === active)!;
+      const item = NAV.find((n) => n.id === active);
       const el = itemRefs.current[active];
-      if (!el) return;
+      if (!el || !item) return;
       const width = el.offsetWidth + item.pad * 2;
       setTab({ left: item.center - width / 2, width });
     };
@@ -85,6 +86,7 @@ export function HomePage() {
   };
 
   return (
+    <>
     <div className="hm-page" ref={pageRef}>
       <div className="hm-stage" ref={stageRef}>
         <div className="hm-corners" aria-hidden />
@@ -191,5 +193,7 @@ export function HomePage() {
         </main>
       </div>
     </div>
+    <HomeSections />
+    </>
   );
 }
